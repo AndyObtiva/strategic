@@ -1,8 +1,18 @@
 module Strategic
   def self.included(klass)
     klass.extend(ClassMethods)
+    klass.require_strategies
   end
+
   module ClassMethods
+    def require_strategies
+      klass_path = caller[1].split(':').first
+      strategy_path = File.expand_path(File.join(klass_path, '..', Strategic.underscore(self.name), '**', '*.rb'))
+      Dir.glob(strategy_path) do |strategy|
+        Object.const_defined?(:Rails) ? require_dependency(strategy) : require(strategy)
+      end
+    end
+
     def strategy_for(string_or_class_or_object)
       if string_or_class_or_object.is_a?(String)
         strategy_class_name = string_or_class_or_object
@@ -11,7 +21,7 @@ module Strategic
       else
         strategy_class_name = string_or_class_or_object.class.name
       end
-      class_name ||= "::#{self.name}::#{classify(strategy_class_name)}Strategy"
+      class_name ||= "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
       class_eval(class_name)
     rescue NameError
       self
@@ -26,5 +36,15 @@ module Strategic
     def classify(text)
       text.split("_").map {|word| "#{word[0].upcase}#{word[1..-1]}"}.join
     end
+  end
+
+  private
+
+  def self.classify(text)
+    text.split("_").map {|word| "#{word[0].upcase}#{word[1..-1]}"}.join
+  end
+
+  def self.underscore(text)
+    text.chars.reduce('') {|output,c| !output.empty? && c.match(/[A-Z]/) ? output + '_' + c : output + c}.downcase
   end
 end
