@@ -18,7 +18,7 @@ code (Open/Closed Principle).
 - Strategy Pattern support through including a Ruby module (trait mixin)
 - Automatic discovery of strategies based on a directory/namespace convention
 - Ability to fetch the needed strategy without use of conditionals
-- Ability to fetch a strategy by name or by object type to mirror
+- Ability to fetch a strategy by name or by object type to strategize by
 - Plain Ruby and Ruby on Rails support
 
 `strategic` enables you to make any existing domain model "strategic", to
