@@ -17,6 +17,10 @@ module Strategic
       self
     end
 
+    def new_with_strategy(string_or_class_or_object, *args, &block)
+      strategy_for(string_or_class_or_object).new(*args, &block)
+    end
+
     private
 
     def classify(text)
