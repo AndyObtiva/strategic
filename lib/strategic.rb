@@ -31,10 +31,16 @@ module Strategic
       strategy_for(string_or_class_or_object).new(*args, &block)
     end
 
-    private
+    def strategies
+      constants.map do |constant_symbol|
+        const_get(constant_symbol)
+      end.select do |constant|
+        constant.respond_to?(:ancestors) && constant.ancestors.include?(self)
+      end
+    end
 
-    def classify(text)
-      text.split("_").map {|word| "#{word[0].upcase}#{word[1..-1]}"}.join
+    def strategy_names
+      strategies.map(&:name).map { |class_name| Strategic.underscore(class_name.split(':').last).sub(/_strategy$/, '') }
     end
   end
 

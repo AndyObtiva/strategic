@@ -61,10 +61,21 @@ RSpec.describe Strategic do
     context 'object type' do
       it 'returns strategy' do
         expect(MoveAction.new_with_strategy(car, position)).to be_a(MoveAction::CarStrategy)
-        expect(MoveAction.new_with_strategy(truck, position)).to be_a(MoveAction::TruckStrategy)
         expect(MoveAction.new_with_strategy(mini_van, position)).to be_a(MoveAction::MiniVanStrategy)
         expect(MoveAction.new_with_strategy(vehicle, position)).to be_a(MoveAction)
       end
+    end
+  end
+
+  describe '.strategies' do
+    it 'returns all loaded strategies' do
+      expect(MoveAction.strategies).to match_array([MoveAction::CarStrategy, MoveAction::MiniVanStrategy])
+    end
+  end
+
+  describe '.strategy_names' do
+    it 'returns all loaded strategy names' do
+      expect(MoveAction.strategy_names).to match_array(['car', 'mini_van'])
     end
   end
 end
