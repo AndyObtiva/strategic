@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/AndyObtiva/strategic".freeze
   s.licenses = ["MIT".freeze]
-  s.rubygems_version = "3.0.6".freeze
+  s.rubygems_version = "2.6.10".freeze
   s.summary = "Painless Strategy Pattern for Ruby and Rails".freeze
 
   if s.respond_to? :specification_version then
