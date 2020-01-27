@@ -13,9 +13,9 @@ module Strategic
       end
     end
 
-    def strategy_for(string_or_class_or_object)
+    def strategy_class_for(string_or_class_or_object)
       if string_or_class_or_object.is_a?(String)
-        strategy_class_name = string_or_class_or_object
+        strategy_class_name = string_or_class_or_object.downcase
       elsif string_or_class_or_object.is_a?(Class)
         strategy_class_name = string_or_class_or_object.name
       else
@@ -27,8 +27,8 @@ module Strategic
       self
     end
 
-    def new_with_strategy(string_or_class_or_object, *args, &block)
-      strategy_for(string_or_class_or_object).new(*args, &block)
+    def new_strategy(string_or_class_or_object, *args, &block)
+      strategy_class_for(string_or_class_or_object).new(*args, &block)
     end
 
     def strategies
