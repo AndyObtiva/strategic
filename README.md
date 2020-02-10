@@ -1,5 +1,6 @@
 # Strategic (Painless Strategy Pattern in Ruby and Rails)
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
+![Ruby](https://github.com/AndyObtiva/strategic/workflows/Ruby/badge.svg)
 
 if/case conditionals can get really hairy in highly sophisticated business domains.
 Domain model inheritance can help remedy the problem, but dumping all
@@ -25,50 +26,10 @@ code (Open/Closed Principle).
 externalizing all logic concerning algorithmic variations into separate strategy
 classes that are easy to find, maintain and extend.
 
-## Instructions
-
-### Option 1: Bundler
-
-Add the following to bundler's `Gemfile`.
-
-```ruby
-gem 'strategic', '~> 0.8.0'
-```
-
-### Option 2: Manual
-
-Or manually install and require library.
-
-```bash
-gem install strategic -v0.8.0
-```
-
-```ruby
-require 'strategic'
-```
-
-### Usage
-
-Steps:
-1. Have the original class you'd like to strategize include Strategic
-2. Create a directory matching the class underscored file name minus the '.rb' extension
-3. Create a strategy class under that directory, which:
- - Lives under the original class namespace
- - Extends the original class to strategize
- - Has a class name that ends with `Strategy` suffix (e.g. `NewCustomerStrategy`)
-4. Get needed strategy class using `strategy_class_for` class method taking strategy name (any case) or related object/type (can call `strategy_names` class method to obtain strategy names)
-5. Instantiate strategy with needed constructor parameters
-6. Invoke strategy method needed
-
-Alternative approach:
-
-Combine steps 4 and 5 using `new_strategy` method, which takes both strategy name
-and constructor parameters
-
-Passing an invalid strategy name to `strategy_class_for` returns original class as the default
-strategy.
-
 ### Example
+
+<img src="strategic-example.png"
+alt="Strategic Example" />
 
 1. Class to strategize is: `TaxCalculator`
 
@@ -140,6 +101,49 @@ tax_calculator_strategy_class = TaxCalculator.strategy_class_for('France')
 tax_calculator_strategy = tax_calculator_strategy_class.new
 tax = tax_calculator_strategy.tax_for(100.0) # returns 9.0 from TaxCalculator
 ```
+
+## Setup
+
+### Option 1: Bundler
+
+Add the following to bundler's `Gemfile`.
+
+```ruby
+gem 'strategic', '~> 0.8.0'
+```
+
+### Option 2: Manual
+
+Or manually install and require library.
+
+```bash
+gem install strategic -v0.8.0
+```
+
+```ruby
+require 'strategic'
+```
+
+### Usage
+
+Steps:
+1. Have the original class you'd like to strategize include Strategic
+2. Create a directory matching the class underscored file name minus the '.rb' extension
+3. Create a strategy class under that directory, which:
+ - Lives under the original class namespace
+ - Extends the original class to strategize
+ - Has a class name that ends with `Strategy` suffix (e.g. `NewCustomerStrategy`)
+4. Get needed strategy class using `strategy_class_for` class method taking strategy name (any case) or related object/type (can call `strategy_names` class method to obtain strategy names)
+5. Instantiate strategy with needed constructor parameters
+6. Invoke strategy method needed
+
+Alternative approach:
+
+Combine steps 4 and 5 using `new_strategy` method, which takes both strategy name
+and constructor parameters
+
+Passing an invalid strategy name to `strategy_class_for` returns original class as the default
+strategy.
 
 ## Release Notes
 
