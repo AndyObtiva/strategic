@@ -60,7 +60,7 @@ GEM
     psych (3.1.0)
     puts_debuggerer (0.8.1)
       awesome_print (~> 1.8.0)
-    rack (2.1.1)
+    rack (2.2.3)
     rake (13.0.1)
     rdoc (3.12.2)
       json (~> 1.4)
