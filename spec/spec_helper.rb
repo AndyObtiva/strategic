@@ -3,13 +3,13 @@ require 'simplecov-lcov'
 require 'coveralls' if ENV['TRAVIS']
 
 SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
-SimpleCov.formatters = [SimpleCov::Formatter::LcovFormatter]
-SimpleCov.formatters << Coveralls::SimpleCov::Formatter if ENV['TRAVIS']
+formatters = []
+formatters << SimpleCov::Formatter::LcovFormatter
+formatters << Coveralls::SimpleCov::Formatter if ENV['TRAVIS']
+SimpleCov.formatters = formatters
 SimpleCov.start do
-  add_filter(/^\/spec\//) # For RSpec, use `test` for MiniTest
+  add_filter(/^\/spec\//)
 end
-
-Coveralls.wear! if ENV['TRAVIS']
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
