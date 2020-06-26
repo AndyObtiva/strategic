@@ -14,7 +14,7 @@ Still, there are a number of challenges with "repeated implementation" of the St
 code (Open/Closed Principle).
 - Fetching the right strategy without the use of conditionals.
 - Avoiding duplication of strategy dispatch code for multiple domain models
-- Have strategies that mirror an existing domain model inheritance hierarchy
+- Have strategies mirror an existing domain model inheritance hierarchy
 
 `strategic` solves these problems by offering:
 - Strategy Pattern support through a Ruby mixin and strategy path/name convention
