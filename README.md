@@ -5,7 +5,7 @@
 
 `if`/`case` conditionals can get really hairy in highly sophisticated business domains.
 Object-oriented inheritance helps remedy the problem, but dumping all
-logic variations in subclasses can also cause a maintenance nightmare.
+logic variations in subclasses can cause a maintenance nightmare.
 Thankfully, the Strategy Pattern as per the [Gang of Four book](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612) solves the problem by externalizing logic to
 separate classes outside the domain models.
 
