@@ -1,19 +1,22 @@
 # Strategic (Painless Strategy Pattern in Ruby and Rails)
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
-![Ruby](https://github.com/AndyObtiva/strategic/workflows/Ruby/badge.svg)
+[![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
-if/case conditionals can get really hairy in highly sophisticated business domains.
-Domain model inheritance can help remedy the problem, but dumping all
-logic variations in the same domain models can cause a maintenance nightmare.
-Thankfully, Strategy Pattern as per the Gang of Four solves the problem by externalizing logic variations to
+(Note: this gem is a very early alpha work in progress and may change API in the future)
+
+`if`/`case` conditionals can get really hairy in highly sophisticated business domains.
+Object-oriented inheritance helps remedy the problem, but dumping all
+logic variations in subclasses can cause a maintenance nightmare.
+Thankfully, the Strategy Pattern as per the [Gang of Four book](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612) solves the problem by externalizing logic to
 separate classes outside the domain models.
 
-Still, there are a number of challenges with repeated implementation of Strategy Pattern:
+Still, there are a number of challenges with "repeated implementation" of the Strategy Pattern:
 - Making domain models aware of newly added strategies without touching their
 code (Open/Closed Principle).
-- Fetching the right strategy without use of conditionals.
+- Fetching the right strategy without the use of conditionals.
 - Avoiding duplication of strategy dispatch code for multiple domain models
-- Have different strategies mirror an existing domain model hierarchy
+- Have strategies mirror an existing domain model inheritance hierarchy
 
 `strategic` solves these problems by offering:
 - Strategy Pattern support through a Ruby mixin and strategy path/name convention
@@ -22,16 +25,16 @@ code (Open/Closed Principle).
 - Ability to fetch a strategy by name or by object type to mirror
 - Plain Ruby and Ruby on Rails support
 
-`strategic` enables you to make any existing domain model "strategic",
+`Strategic` enables you to make any existing domain model "strategic",
 externalizing all logic concerning algorithmic variations into separate strategy
-classes that are easy to find, maintain and extend.
+classes that are easy to find, maintain and extend while honoring the Open/Closed Principle.
 
 ### Example
 
 <img src="strategic-example.png"
 alt="Strategic Example" />
 
-1. Class to strategize is: `TaxCalculator`
+1. Include `Strategic` module in the Class to strategize: `TaxCalculator`
 
 ```ruby
 class TaxCalculator
@@ -43,9 +46,9 @@ class TaxCalculator
 end
 ```
 
-2. Directory to create strategies under: `tax_calculator`
+2. Now, you can add strategies under this directory without having to modify the original class: `tax_calculator`
 
-3. Strategy class:
+3. Add strategy classes under the namespace matching the original class name (`TaxCalculator`) and extending the original class (`TaxCalculator`) just to take advantage of default logic in it:
 
 ```ruby
 class TaxCalculator::UsStrategy < TaxCalculator
@@ -69,32 +72,32 @@ class TaxCalculator::CanadaStrategy < TaxCalculator
 end
 ```
 
-4. Get needed strategy:
+4. In client code, obtain the needed strategy by underscored string reference minus the word strategy (e.g. UsStrategy becomes simply 'us'):
 
 ```ruby
 tax_calculator_strategy_class = TaxCalculator.strategy_class_for('us')
 ```
 
-5. Instantiate strategy:
+5. Instantiate the strategy object:
 
 ```ruby
 tax_calculator_strategy = strategy_class.new('IL')
 ```
 
-6. Invoke strategy method:
+6. Invoke the strategy overridden method:
 
 ```ruby
 tax = tax_calculator_strategy.tax_for(39.78)
 ```
 
-**Alternative approach using `new_strategy`:**
+**Alternative approach using `new_strategy(strategy_name, *initializer_args)`:**
 
 ```ruby
 tax_calculator_strategy = TaxCalculator.new_strategy('US', 'IL')
 tax = tax_calculator_strategy.tax_for(39.78)
 ```
 
-**Default strategy for a strategy name that has no strategy class is TaxCalculator**
+**Default strategy for a strategy name that has no strategy class is the superclass: `TaxCalculator`**
 
 ```ruby
 tax_calculator_strategy_class = TaxCalculator.strategy_class_for('France')
