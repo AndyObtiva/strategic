@@ -4,17 +4,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
 if/case conditionals can get really hairy in highly sophisticated business domains.
-Domain model inheritance can help remedy the problem, but dumping all
-logic variations in the same domain models can cause a maintenance nightmare.
-Thankfully, Strategy Pattern as per the Gang of Four solves the problem by externalizing logic variations to
+Object oriented inheritance can help remedy the problem, but dumping all
+logic variations in subclasses can also cause a maintenance nightmare.
+Thankfully, Strategy Pattern as per the Gang of Four solves the problem by externalizing logic to
 separate classes outside the domain models.
 
-Still, there are a number of challenges with repeated implementation of Strategy Pattern:
+Still, there are a number of challenges with "repeated implementation" of the Strategy Pattern:
 - Making domain models aware of newly added strategies without touching their
 code (Open/Closed Principle).
-- Fetching the right strategy without use of conditionals.
+- Fetching the right strategy without the use of conditionals.
 - Avoiding duplication of strategy dispatch code for multiple domain models
-- Have different strategies mirror an existing domain model hierarchy
+- Have strategies that mirror an existing domain model inheritance hierarchy
 
 `strategic` solves these problems by offering:
 - Strategy Pattern support through a Ruby mixin and strategy path/name convention
@@ -25,7 +25,7 @@ code (Open/Closed Principle).
 
 `strategic` enables you to make any existing domain model "strategic",
 externalizing all logic concerning algorithmic variations into separate strategy
-classes that are easy to find, maintain and extend.
+classes that are easy to find, maintain and extend while honoring the Open/Closed Principle.
 
 ### Example
 
