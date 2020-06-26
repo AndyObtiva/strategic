@@ -4,3 +4,8 @@ rvm:
   - 2.6.6
   - 2.5.8
   - 2.4.10
+after_script:
+  ruby -e "$(curl -s https://undercover-ci.com/uploader.rb)" -- \
+            --repo AndyObtiva/strategic \
+            --commit $TRAVIS_COMMIT \
+            --lcov coverage/lcov/strategic.lcov
