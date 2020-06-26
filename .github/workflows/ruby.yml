@@ -25,5 +25,5 @@ jobs:
         bundle exec rake spec
         ruby -e "$(curl -s https://undercover-ci.com/uploader.rb)" -- \
           --repo AndyObtiva/strategic \
-          --commit master \
+          --commit $GITHUB_SHA \
           --lcov coverage/lcov/strategic.lcov:

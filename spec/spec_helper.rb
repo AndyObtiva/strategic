@@ -1,16 +1,16 @@
 require 'simplecov'
 require 'simplecov-lcov'
-require 'coveralls'
+require 'coveralls' if ENV['TRAVIS']
 SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
-SimpleCov.formatters = [
-  SimpleCov::Formatter::LcovFormatter,
-  Coveralls::SimpleCov::Formatter
-]
-# SimpleCov::ResultMerger.merged_result.format!
+if ENV['TRAVIS']
+  SimpleCov.formatter = Coveralls::SimpleCov::Formatter 
+else
+  SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
+end
 SimpleCov.start do
   add_filter('^\/spec\/') # For RSpec, use `test` for MiniTest
 end
-Coveralls.wear!
+Coveralls.wear! if ENV['TRAVIS']
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
