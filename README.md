@@ -46,7 +46,7 @@ end
 
 2. Now, you can add strategies under this directory without having to modify the original class: `tax_calculator`
 
-3. Add these strategy classes:
+3. Add strategy classes under the namespace matching the original class name (`TaxCalculator`) and extending the original class (`TaxCalculator`):
 
 ```ruby
 class TaxCalculator::UsStrategy < TaxCalculator
