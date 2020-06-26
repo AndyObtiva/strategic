@@ -1,6 +1,7 @@
 # Strategic (Painless Strategy Pattern in Ruby and Rails)
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
-![Ruby](https://github.com/AndyObtiva/strategic/workflows/Ruby/badge.svg)
+[![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
 if/case conditionals can get really hairy in highly sophisticated business domains.
 Domain model inheritance can help remedy the problem, but dumping all
