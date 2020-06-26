@@ -13,5 +13,6 @@ group :development do
   gem 'jeweler', '~> 2.3.0'
   gem 'coveralls', '= 0.8.5', require: false
   gem 'simplecov', '~> 0.10.0', require: nil
+  gem 'simplecov-lcov', '~> 0.8.0', require: nil
   gem 'puts_debuggerer', '~> 0.8.1'
 end

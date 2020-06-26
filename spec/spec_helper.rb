@@ -1,14 +1,16 @@
-if RUBY_VERSION >= '2.3' && !defined?(Rubinius)
-  begin
-    require 'coveralls'
-    Coveralls.wear!
-  rescue LoadError, StandardError => e
-    #no op to support Rubies that do not support Coveralls
-    puts 'Error loading Coveralls'
-    puts e.message
-    puts e.backtrace.join("\n")
-  end
+require 'simplecov'
+require 'simplecov-lcov'
+require 'coveralls'
+SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+SimpleCov.formatters = [
+  SimpleCov::Formatter::LcovFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+# SimpleCov::ResultMerger.merged_result.format!
+SimpleCov.start do
+  add_filter('^\/spec\/') # For RSpec, use `test` for MiniTest
 end
+Coveralls.wear!
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
