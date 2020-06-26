@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
+(Note: this gem is a very early alpha work in progress and may change API in the future)
+
 `if`/`case` conditionals can get really hairy in highly sophisticated business domains.
 Object-oriented inheritance helps remedy the problem, but dumping all
 logic variations in subclasses can cause a maintenance nightmare.
