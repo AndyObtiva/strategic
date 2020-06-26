@@ -23,7 +23,7 @@ code (Open/Closed Principle).
 - Ability to fetch a strategy by name or by object type to mirror
 - Plain Ruby and Ruby on Rails support
 
-`strategic` enables you to make any existing domain model "strategic",
+`Strategic` enables you to make any existing domain model "strategic",
 externalizing all logic concerning algorithmic variations into separate strategy
 classes that are easy to find, maintain and extend while honoring the Open/Closed Principle.
 
@@ -32,7 +32,7 @@ classes that are easy to find, maintain and extend while honoring the Open/Close
 <img src="strategic-example.png"
 alt="Strategic Example" />
 
-1. Class to strategize is: `TaxCalculator`
+1. Include `Strategic` module in the Class to strategize: `TaxCalculator`
 
 ```ruby
 class TaxCalculator
@@ -44,9 +44,9 @@ class TaxCalculator
 end
 ```
 
-2. Directory to create strategies under: `tax_calculator`
+2. Now, you can add strategies under this directory without having to modify the original class: `tax_calculator`
 
-3. Strategy class:
+3. Add these strategy classes:
 
 ```ruby
 class TaxCalculator::UsStrategy < TaxCalculator
@@ -70,32 +70,32 @@ class TaxCalculator::CanadaStrategy < TaxCalculator
 end
 ```
 
-4. Get needed strategy:
+4. In client code, obtain the needed strategy by underscored string reference minus the word strategy (e.g. UsStrategy becomes simply 'us'):
 
 ```ruby
 tax_calculator_strategy_class = TaxCalculator.strategy_class_for('us')
 ```
 
-5. Instantiate strategy:
+5. Instantiate the strategy object:
 
 ```ruby
 tax_calculator_strategy = strategy_class.new('IL')
 ```
 
-6. Invoke strategy method:
+6. Invoke the strategy overridden method:
 
 ```ruby
 tax = tax_calculator_strategy.tax_for(39.78)
 ```
 
-**Alternative approach using `new_strategy`:**
+**Alternative approach using `new_strategy(strategy_name, *initializer_args)`:**
 
 ```ruby
 tax_calculator_strategy = TaxCalculator.new_strategy('US', 'IL')
 tax = tax_calculator_strategy.tax_for(39.78)
 ```
 
-**Default strategy for a strategy name that has no strategy class is TaxCalculator**
+**Default strategy for a strategy name that has no strategy class is the superclass: `TaxCalculator`**
 
 ```ruby
 tax_calculator_strategy_class = TaxCalculator.strategy_class_for('France')
