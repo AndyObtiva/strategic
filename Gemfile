@@ -11,8 +11,8 @@ group :development do
   gem 'rdoc', '~> 3.12'
   gem 'bundler', '>= 1.0'
   gem 'jeweler', '~> 2.3.0'
-  gem 'coveralls', '= 0.8.5', require: false
-  gem 'simplecov', '~> 0.10.0', require: nil
+  gem 'coveralls', '= 0.8.23', require: false
+  gem 'simplecov', '~> 0.16.1', require: nil
   gem 'simplecov-lcov', '~> 0.8.0', require: nil
   gem 'puts_debuggerer', '~> 0.8.1'
 end
