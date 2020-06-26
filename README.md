@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
 if/case conditionals can get really hairy in highly sophisticated business domains.
-Object oriented inheritance can help remedy the problem, but dumping all
+Object-oriented inheritance helps remedy the problem, but dumping all
 logic variations in subclasses can also cause a maintenance nightmare.
 Thankfully, Strategy Pattern as per the Gang of Four solves the problem by externalizing logic to
 separate classes outside the domain models.
