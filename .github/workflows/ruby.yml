@@ -26,4 +26,4 @@ jobs:
         ruby -e "$(curl -s https://undercover-ci.com/uploader.rb)" -- \
           --repo AndyObtiva/strategic \
           --commit $GITHUB_SHA \
-          --lcov coverage/lcov/strategic.lcov:
+          --lcov coverage/lcov/strategic.lcov
