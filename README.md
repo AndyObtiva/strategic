@@ -148,13 +148,20 @@ and constructor parameters
 Passing an invalid strategy name to `strategy_class_for` returns original class as the default
 strategy.
 
-## Release Notes
+## API
 
-**0.8.0:** Initial version with `strategy_class_for`, `new_strategy`, `strategies`, and `strategy_names`
+- `StrategicSuperClass::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects USStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+- `StrategicSuperClass::new_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
+- `StrategicSuperClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
+- `StrategicSuperClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
 
 ## TODO
 
-None
+[TODO.md](TODO.md)
+
+## Change Log
+
+[CHANGELOG.md](CHANGELOG.md)
 
 ## Contributing
 
@@ -168,7 +175,8 @@ None
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
-## Copyright
+## License
 
-Copyright (c) 2020 Andy Maleh. See LICENSE.txt for
-further details.
+[MIT](LICENSE.txt)
+
+Copyright (c) 2020-2021 Andy Maleh.

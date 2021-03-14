@@ -9,9 +9,9 @@ RSpec.describe Strategic do
   let(:car_attributes) { {make: 'Mitsubishi', model: 'Eclipse'} }
   let(:mini_van_attributes) { {make: 'Toyota', model: 'Tundra'} }
 
-  let(:vehicle) { Vehicle.new(vehicle_attributes) }
-  let(:car) { Car.new(vehicle_attributes) }
-  let(:mini_van) { MiniVan.new(mini_van_attributes) }
+  let(:vehicle) { Vehicle.new(**vehicle_attributes) }
+  let(:car) { Car.new(**vehicle_attributes) }
+  let(:mini_van) { MiniVan.new(**mini_van_attributes) }
 
   let(:position) { 0 }
 
@@ -45,6 +45,7 @@ RSpec.describe Strategic do
     context 'strategy name' do
       it 'returns strategy' do
         expect(MoveAction.new_strategy('car', position)).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_strategy('sedan', position)).to be_a(MoveAction::CarStrategy)
         expect(MoveAction.new_strategy('MINI_VAN', position)).to be_a(MoveAction::MiniVanStrategy)
         expect(MoveAction.new_strategy('invalid name returns default strategy', position)).to be_a(MoveAction)
       end

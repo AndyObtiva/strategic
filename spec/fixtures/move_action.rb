@@ -4,6 +4,8 @@ class MoveAction
   include Strategic
 
   class CarStrategy < MoveAction
+    strategy_alias 'sedan'
+  
     def move
       position += 10
     end

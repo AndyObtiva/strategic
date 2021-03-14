@@ -1,3 +1,24 @@
+# Copyright (c) 2020-2021 Andy Maleh
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 module Strategic
   def self.included(klass)
     klass.extend(ClassMethods)
@@ -5,6 +26,14 @@ module Strategic
   end
 
   module ClassMethods
+    def strategy_alias(alias_value)
+      strategy_aliases << alias_value
+    end
+    
+    def strategy_aliases
+      @strategy_aliases ||= []
+    end
+  
     def require_strategies
       klass_path = caller[1].split(':').first
       strategy_path = File.expand_path(File.join(klass_path, '..', Strategic.underscore(self.name), '**', '*.rb'))
@@ -21,10 +50,15 @@ module Strategic
       else
         strategy_class_name = string_or_class_or_object.class.name
       end
-      class_name ||= "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
-      class_eval(class_name)
-    rescue NameError
-      self
+      strategy_class = nil
+      begin
+        class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
+        strategy_class = class_eval(class_name)
+      rescue NameError
+        # No Op
+      end
+      strategy_class ||= strategies.detect { |strategy| strategy.strategy_aliases.include?(string_or_class_or_object) }
+      strategy_class ||= self
     end
 
     def new_strategy(string_or_class_or_object, *args, &block)
