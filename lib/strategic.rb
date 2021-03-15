@@ -26,12 +26,28 @@ module Strategic
   end
 
   module ClassMethods
-    def strategy_alias(alias_value)
-      strategy_aliases << alias_value
+    def strategy_alias(alias_string_or_class_or_object)
+      strategy_aliases << alias_string_or_class_or_object
     end
     
     def strategy_aliases
       @strategy_aliases ||= []
+    end
+  
+    def strategy_exclusion(exclusion_string_or_class_or_object)
+      strategy_exclusions << exclusion_string_or_class_or_object
+    end
+    
+    def strategy_exclusions
+      @strategy_exclusions ||= []
+    end
+    
+    def strategy_matcher(&matcher_block)
+      if block_given?
+        @strategy_matcher = matcher_block
+      else
+        @strategy_matcher
+      end
     end
   
     def require_strategies
@@ -43,19 +59,27 @@ module Strategic
     end
 
     def strategy_class_for(string_or_class_or_object)
-      if string_or_class_or_object.is_a?(String)
-        strategy_class_name = string_or_class_or_object.downcase
-      elsif string_or_class_or_object.is_a?(Class)
-        strategy_class_name = string_or_class_or_object.name
-      else
-        strategy_class_name = string_or_class_or_object.class.name
-      end
       strategy_class = nil
-      begin
-        class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
-        strategy_class = class_eval(class_name)
-      rescue NameError
-        # No Op
+      if strategy_matcher
+        strategy_class = strategies.detect do |strategy|
+          match = strategy&.strategy_matcher&.call(string_or_class_or_object)
+          match ||= strategy.instance_exec(string_or_class_or_object, &strategy_matcher)
+          match unless strategy.strategy_exclusions.include?(string_or_class_or_object)
+        end
+      else
+        if string_or_class_or_object.is_a?(String)
+          strategy_class_name = string_or_class_or_object.downcase
+        elsif string_or_class_or_object.is_a?(Class)
+          strategy_class_name = string_or_class_or_object.name
+        else
+          strategy_class_name = string_or_class_or_object.class.name
+        end
+        begin
+          class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
+          strategy_class = class_eval(class_name)
+        rescue NameError
+          # No Op
+        end
       end
       strategy_class ||= strategies.detect { |strategy| strategy.strategy_aliases.include?(string_or_class_or_object) }
       strategy_class ||= self

@@ -3,6 +3,7 @@ require_relative '../fixtures/vehicle'
 require_relative '../fixtures/car'
 require_relative '../fixtures/mini_van'
 require_relative '../fixtures/move_action'
+require_relative '../fixtures/move_action_with_strategy_matcher'
 
 RSpec.describe Strategic do
   let(:vehicle_attributes) { {make: 'NASA', model: 'Mars Curiosity Rover'} }
@@ -48,6 +49,19 @@ RSpec.describe Strategic do
         expect(MoveAction.new_strategy('sedan', position)).to be_a(MoveAction::CarStrategy)
         expect(MoveAction.new_strategy('MINI_VAN', position)).to be_a(MoveAction::MiniVanStrategy)
         expect(MoveAction.new_strategy('invalid name returns default strategy', position)).to be_a(MoveAction)
+        
+        expect(MoveActionWithStrategyMatcher.new_strategy('Car', position)).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('sedan', position)).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mini_van', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mini_va', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mini_v', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mini_', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mini', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('min', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('mi', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_strategy('m', position).class).to eq(MoveActionWithStrategyMatcher)
+        
+        expect(MoveActionWithStrategyMatcher.new_strategy('invalid name returns default strategy', position)).to be_a(MoveActionWithStrategyMatcher)
       end
     end
 

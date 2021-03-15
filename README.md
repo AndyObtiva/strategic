@@ -1,4 +1,5 @@
-# Strategic (Painless Strategy Pattern in Ruby and Rails)
+# Strategic 0.9.0
+## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
@@ -112,7 +113,7 @@ tax = tax_calculator_strategy.tax_for(100.0) # returns 9.0 from TaxCalculator
 Add the following to bundler's `Gemfile`.
 
 ```ruby
-gem 'strategic', '~> 0.8.0'
+gem 'strategic', '~> 0.9.0'
 ```
 
 ### Option 2: Manual
@@ -120,7 +121,7 @@ gem 'strategic', '~> 0.8.0'
 Or manually install and require library.
 
 ```bash
-gem install strategic -v0.8.0
+gem install strategic -v0.9.0
 ```
 
 ```ruby
@@ -154,6 +155,9 @@ strategy.
 - `StrategicSuperClass::new_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
 - `StrategicSuperClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
 - `StrategicSuperClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
+- `StrategicSuperClass::strategy_matcher`: custom match (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+- `StrategicSuperClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
+- `StrategicSuperClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
 
 ## TODO
 

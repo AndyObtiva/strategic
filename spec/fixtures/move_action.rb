@@ -2,7 +2,7 @@ require 'strategic'
 
 class MoveAction
   include Strategic
-
+  
   class CarStrategy < MoveAction
     strategy_alias 'sedan'
   
