@@ -49,6 +49,10 @@ module Strategic
         @strategy_matcher
       end
     end
+    
+    def strategy_matcher_for_any_strategy?
+      !!(strategy_matcher || strategies.any?(&:strategy_matcher))
+    end
   
     def require_strategies
       klass_path = caller[1].split(':').first
@@ -59,32 +63,34 @@ module Strategic
     end
 
     def strategy_class_for(string_or_class_or_object)
-      strategy_class = nil
-      if strategy_matcher
-        strategy_class = strategies.detect do |strategy|
-          match = strategy.strategy_aliases.include?(string_or_class_or_object)
-          match ||= strategy&.strategy_matcher&.call(string_or_class_or_object)
-          match ||= strategy.instance_exec(string_or_class_or_object, &strategy_matcher)
-          # match unless excluded or included by another strategy as an alias
-          match unless strategy.strategy_exclusions.include?(string_or_class_or_object) || (strategies - [strategy]).map(&:strategy_aliases).flatten.include?(string_or_class_or_object)
-        end
-      else
-        if string_or_class_or_object.is_a?(String)
-          strategy_class_name = string_or_class_or_object.downcase
-        elsif string_or_class_or_object.is_a?(Class)
-          strategy_class_name = string_or_class_or_object.name
-        else
-          strategy_class_name = string_or_class_or_object.class.name
-        end
-        begin
-          class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
-          strategy_class = class_eval(class_name)
-        rescue NameError
-          # No Op
-        end
-      end
+      strategy_class = strategy_matcher_for_any_strategy? ? strategy_class_with_strategy_matcher(string_or_class_or_object) : strategy_class_without_strategy_matcher(string_or_class_or_object)
       strategy_class ||= strategies.detect { |strategy| strategy.strategy_aliases.include?(string_or_class_or_object) }
       strategy_class ||= self
+    end
+    
+    def strategy_class_with_strategy_matcher(string_or_class_or_object)
+      strategies.detect do |strategy|
+        match = strategy.strategy_aliases.include?(string_or_class_or_object)
+        match ||= strategy&.strategy_matcher&.call(string_or_class_or_object) || (strategy_matcher && strategy.instance_exec(string_or_class_or_object, &strategy_matcher))
+        # match unless excluded or included by another strategy as an alias
+        match unless strategy.strategy_exclusions.include?(string_or_class_or_object) || (strategies - [strategy]).map(&:strategy_aliases).flatten.include?(string_or_class_or_object)
+      end
+    end
+    
+    def strategy_class_without_strategy_matcher(string_or_class_or_object)
+      if string_or_class_or_object.is_a?(String)
+        strategy_class_name = string_or_class_or_object.downcase
+      elsif string_or_class_or_object.is_a?(Class)
+        strategy_class_name = string_or_class_or_object.name
+      else
+        strategy_class_name = string_or_class_or_object.class.name
+      end
+      begin
+        class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
+        class_eval(class_name)
+      rescue NameError
+        # No Op
+      end
     end
 
     def new_strategy(string_or_class_or_object, *args, &block)

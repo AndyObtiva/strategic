@@ -3,8 +3,7 @@
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![rspec](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml/badge.svg)](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml)
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
-
-(Note: this gem is a very early alpha work in progress and may change API in the future)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0e638e392c21500c4fbe/maintainability)](https://codeclimate.com/github/AndyObtiva/strategic/maintainability)
 
 `if`/`case` conditionals can get really hairy in highly sophisticated business domains.
 Object-oriented inheritance helps remedy the problem, but dumping all
