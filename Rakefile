@@ -62,3 +62,11 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+require 'coveralls/rake/task'
+Coveralls::RakeTask.new
+task :spec_with_coveralls => [:spec] do
+  ENV['TRAVIS'] = 'true'
+  ENV['CI'] = 'true' if ENV['CI'].nil?
+  Rake::Task['coveralls:push'].invoke
+end

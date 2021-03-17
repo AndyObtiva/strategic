@@ -1,13 +1,5 @@
-require 'simplecov'
-require 'simplecov-lcov'
-require 'coveralls' if ENV['TRAVIS']
-
-SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
-formatters = []
-formatters << SimpleCov::Formatter::LcovFormatter
-formatters << Coveralls::SimpleCov::Formatter if ENV['TRAVIS']
-SimpleCov.formatters = formatters
-SimpleCov.start do
+require 'coveralls'
+Coveralls.wear! do
   add_filter(/^\/spec\//)
 end
 

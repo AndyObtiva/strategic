@@ -1,7 +1,7 @@
 # Strategic 0.9.1
 ## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
-[![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
+[![rspec](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml/badge.svg)](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml)
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 
 (Note: this gem is a very early alpha work in progress and may change API in the future)

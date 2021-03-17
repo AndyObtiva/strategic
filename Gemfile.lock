@@ -38,7 +38,7 @@ GEM
       rake
       rdoc
       semver2
-    json (1.8.6)
+    json (2.5.1)
     jwt (2.2.2)
     mime-types (2.99.3)
     mini_portile2 (2.5.0)
@@ -61,8 +61,7 @@ GEM
     rack (2.2.3)
     rake (13.0.3)
     rchardet (1.8.0)
-    rdoc (3.12.2)
-      json (~> 1.4)
+    rdoc (6.3.0)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -82,7 +81,6 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    simplecov-lcov (0.7.0)
     sync (0.5.0)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
@@ -96,14 +94,13 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (>= 1.0)
-  coveralls (= 0.8.23)
+  coveralls (~> 0.8.23)
   jeweler (~> 2.3.0)
   puts_debuggerer (>= 0.8.1)
-  rdoc (~> 3.12)
+  rdoc (>= 3.12)
   rspec (~> 3.5.0)
   rspec-mocks (~> 3.5.0)
   simplecov (~> 0.16.1)
-  simplecov-lcov (~> 0.7.0)
 
 BUNDLED WITH
    2.2.3
