@@ -13,6 +13,7 @@ class MoveActionWithStrategyMatcher
 
   class CarStrategy < MoveActionWithStrategyMatcher
     strategy_alias 'sedan'
+    strategy_alias 'mini'
     
     strategy_matcher do |string_or_class_or_object, strategy_class|
       class_name = self.name

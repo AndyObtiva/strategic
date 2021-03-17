@@ -62,9 +62,11 @@ module Strategic
       strategy_class = nil
       if strategy_matcher
         strategy_class = strategies.detect do |strategy|
-          match = strategy&.strategy_matcher&.call(string_or_class_or_object)
+          match = strategy.strategy_aliases.include?(string_or_class_or_object)
+          match ||= strategy&.strategy_matcher&.call(string_or_class_or_object)
           match ||= strategy.instance_exec(string_or_class_or_object, &strategy_matcher)
-          match unless strategy.strategy_exclusions.include?(string_or_class_or_object)
+          # match unless excluded or included by another strategy as an alias
+          match unless strategy.strategy_exclusions.include?(string_or_class_or_object) || (strategies - [strategy]).map(&:strategy_aliases).flatten.include?(string_or_class_or_object)
         end
       else
         if string_or_class_or_object.is_a?(String)

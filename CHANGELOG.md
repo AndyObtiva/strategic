@@ -3,6 +3,7 @@
 ## 0.9.1
 
 - `strategy_name` returns parsed strategy name of current strategy class
+- `strategy_matcher` ignores a strategy if it found another strategy already matching by strategy_alias
 
 ## 0.9.0
 
