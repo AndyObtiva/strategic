@@ -1,4 +1,4 @@
-# Strategic 0.9.0
+# Strategic 0.9.1
 ## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![Build Status](https://travis-ci.com/AndyObtiva/strategic.svg?branch=master)](https://travis-ci.com/AndyObtiva/strategic?branch=master)
@@ -113,7 +113,7 @@ tax = tax_calculator_strategy.tax_for(100.0) # returns 9.0 from TaxCalculator
 Add the following to bundler's `Gemfile`.
 
 ```ruby
-gem 'strategic', '~> 0.9.0'
+gem 'strategic', '~> 0.9.1'
 ```
 
 ### Option 2: Manual
@@ -121,7 +121,7 @@ gem 'strategic', '~> 0.9.0'
 Or manually install and require library.
 
 ```bash
-gem install strategic -v0.9.0
+gem install strategic -v0.9.1
 ```
 
 ```ruby
@@ -151,13 +151,14 @@ strategy.
 
 ## API
 
-- `StrategicSuperClass::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects USStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
-- `StrategicSuperClass::new_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
-- `StrategicSuperClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
-- `StrategicSuperClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
-- `StrategicSuperClass::strategy_matcher`: custom match (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
-- `StrategicSuperClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
-- `StrategicSuperClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
+- `StrategicClass::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects USStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+- `StrategicClass::new_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
+- `StrategicClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
+- `StrategicClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
+- `StrategicClass::strategy_name`: returns parsed strategy name of current strategy class
+- `StrategicClass::strategy_matcher`: custom match (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+- `StrategicClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
+- `StrategicClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
 
 ## TODO
 

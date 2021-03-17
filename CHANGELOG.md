@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.9.1
+
+- `strategy_name` returns parsed strategy name of current strategy class
+
 ## 0.9.0
 
 - `strategy_matcher` block support that enables any strategy to specify a custom matcher (or the superclass of all strategies instead)

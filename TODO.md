@@ -1,14 +1,4 @@
 # TODO
 
 - `StrategySubClass#strategy_name` method that parses name from Strategy class name by convention
-- Allow strategies to specify additional strings or objects they match (other than their class name convention) to enable instantating via `new_strategy`
-Example:
-```ruby
-class StrategySuperClass::SomeStrategy < StrategySuperClass
-  strategy_for 'Something'
-  strategy_for 777
-  strategy_for do |object|
-    object.to_i.odd?
-  end
-end
-```
+- Ensure that if a strategy_matcher found a strategy already declared by a strategy_alias by some strategy other than current one matched, it is ignored

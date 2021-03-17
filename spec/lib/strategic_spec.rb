@@ -82,15 +82,22 @@ RSpec.describe Strategic do
     end
   end
 
-  describe '.strategies' do
+  describe '::strategies' do
     it 'returns all loaded strategies' do
       expect(MoveAction.strategies).to match_array([MoveAction::CarStrategy, MoveAction::MiniVanStrategy])
     end
   end
 
-  describe '.strategy_names' do
+  describe '::strategy_names' do
     it 'returns all loaded strategy names' do
       expect(MoveAction.strategy_names).to match_array(['car', 'mini_van'])
+    end
+  end
+
+  describe '::strategy_name' do
+    it 'returns all loaded strategy names' do
+      expect(MoveAction::CarStrategy.strategy_name).to eq('car')
+      expect(MoveAction::MiniVanStrategy.strategy_name).to eq('mini_van')
     end
   end
 end

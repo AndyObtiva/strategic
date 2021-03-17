@@ -98,7 +98,11 @@ module Strategic
     end
 
     def strategy_names
-      strategies.map(&:name).map { |class_name| Strategic.underscore(class_name.split(':').last).sub(/_strategy$/, '') }
+      strategies.map(&:strategy_name)
+    end
+    
+    def strategy_name
+      Strategic.underscore(name.split(':').last).sub(/_strategy$/, '')
     end
   end
 
