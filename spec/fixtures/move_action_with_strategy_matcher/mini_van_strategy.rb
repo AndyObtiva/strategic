@@ -1,4 +1,6 @@
-class MoveActionWithStrategyMatcher::MiniVanStrategy < MoveActionWithStrategyMatcher
+class MoveActionWithStrategyMatcher::MiniVanStrategy
+  include Strategic::Strategy
+  
   strategy_exclusion 'm'
   
   def move

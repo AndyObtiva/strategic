@@ -1,15 +1,16 @@
-# Strategic 0.9.1
+# Strategic 1.0.0
 ## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![rspec](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml/badge.svg)](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml)
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0e638e392c21500c4fbe/maintainability)](https://codeclimate.com/github/AndyObtiva/strategic/maintainability)
 
+(note: this is an alpha version, so the API design might change notably in the future)
+
 `if`/`case` conditionals can get really hairy in highly sophisticated business domains.
 Object-oriented inheritance helps remedy the problem, but dumping all
-logic variations in subclasses can cause a maintenance nightmare.
-Thankfully, the Strategy Pattern as per the [Gang of Four book](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612) solves the problem by externalizing logic to
-separate classes outside the domain models.
+logic variations in domain model subclasses can cause a maintenance nightmare.
+Thankfully, the Strategy Pattern as per the [Gang of Four book](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612) solves the problem by externalizing logic via composition to separate classes outside the domain models.
 
 Still, there are a number of challenges with "repeated implementation" of the Strategy Pattern:
 - Making domain models aware of newly added strategies without touching their
@@ -27,7 +28,9 @@ code (Open/Closed Principle).
 
 `Strategic` enables you to make any existing domain model "strategic",
 externalizing all logic concerning algorithmic variations into separate strategy
-classes that are easy to find, maintain and extend while honoring the Open/Closed Principle.
+classes that are easy to find, maintain and extend while honoring the Open/Closed Principle and avoiding conditionals.
+
+In summary, if you make a class called `TaxCalculator` strategic by including the `Strategic` mixin module, now you are able to drop strategies under the `tax_calculator` directory sitting next to the class (e.g. `tax_calculator/us_strategy.rb`, `tax_calculator/canada_strategy.rb`) while gaining extra [API](#api) methods to grab strategy names to present in a user interface (`.strategy_names`), grab strategy classes to use (`.strategy_class_for(strategy_name)`), and/or instantiate `TaxCalculator` directly with a strategy from the get-go (`.new_strategy(strategy_name, *initialize_args)`).
 
 ### Example
 
@@ -48,7 +51,7 @@ end
 
 2. Now, you can add strategies under this directory without having to modify the original class: `tax_calculator`
 
-3. Add strategy classes under the namespace matching the original class name (`TaxCalculator`) and extending the original class (`TaxCalculator`) just to take advantage of default logic in it:
+3. Add strategy classes under the namespace matching the original class name (`TaxCalculator`) and extending the original class (`TaxCalculator`) just to take advantage of default logic in it (this goes against the default Gang of Four Strategy Pattern, but was done out of convenience without the downsides of domain model inheritance since those subclasses are not used directly, yet via a strategy name string without conditionals or via a matcher for another object hierarchy):
 
 ```ruby
 class TaxCalculator::UsStrategy < TaxCalculator
@@ -72,7 +75,7 @@ class TaxCalculator::CanadaStrategy < TaxCalculator
 end
 ```
 
-4. In client code, obtain the needed strategy by underscored string reference minus the word strategy (e.g. UsStrategy becomes simply 'us'):
+4. In client code, obtain the needed strategy by underscored string reference (case-insensitive) minus the word strategy (e.g. UsStrategy becomes simply 'us'):
 
 ```ruby
 tax_calculator_strategy_class = TaxCalculator.strategy_class_for('us')
@@ -112,7 +115,7 @@ tax = tax_calculator_strategy.tax_for(100.0) # returns 9.0 from TaxCalculator
 Add the following to bundler's `Gemfile`.
 
 ```ruby
-gem 'strategic', '~> 0.9.1'
+gem 'strategic', '~> 1.0.0'
 ```
 
 ### Option 2: Manual
@@ -120,7 +123,7 @@ gem 'strategic', '~> 0.9.1'
 Or manually install and require library.
 
 ```bash
-gem install strategic -v0.9.1
+gem install strategic -v1.0.0
 ```
 
 ```ruby
@@ -155,9 +158,52 @@ strategy.
 - `StrategicClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
 - `StrategicClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
 - `StrategicClass::strategy_name`: returns parsed strategy name of current strategy class
-- `StrategicClass::strategy_matcher`: custom match (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+
+### Customization DSL
+
+These API methods are used more like DSL methods invoked in the class body of a strategy or a strategic superclass for all strategies:
+- `StrategicClass::strategy_matcher`: custom matcher to use instead of the built-in one that matches strategy name by convention (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
 - `StrategicClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
 - `StrategicClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
+
+Example:
+
+```ruby
+class TaxCalculator
+  # fuzz matcher
+  strategy_matcher do |string_or_class_or_object|
+    class_name = self.name # current strategy class name being tested for matching
+    strategy_name = class_name.split('::').last.sub(/Strategy$/, '').gsub(/([A-Z])/) {|letter| "_#{letter.downcase}"}[1..-1]
+    strategy_name_length = strategy_name.length
+    possible_keywords = strategy_name_length.times.map {|n| strategy_name.chars.combination(strategy_name_length - n).to_a}.reduce(:+).map(&:join)
+    possible_keywords.include?(string_or_class_or_object)
+  end
+  # ... more code follows
+end
+
+class TaxCalculator::UsStrategy < TaxCalculator
+  strategy_alias 'USA'
+  strategy_exclusion 'U'
+  
+  def initialize(state)
+    @state = state
+  end
+  def tax_for(amount)
+    amount * state_rate
+  end
+  # ... more code follows
+end
+
+class TaxCalculator::CanadaStrategy < TaxCalculator
+  def initialize(province)
+    @province = province
+  end
+  def tax_for(amount)
+    amount * (gst + qst)
+  end
+  # ... more code follows
+end
+```
 
 ## TODO
 

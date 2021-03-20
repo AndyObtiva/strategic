@@ -3,15 +3,17 @@ require 'strategic'
 class MoveAction
   include Strategic
   
-  class CarStrategy < MoveAction
+  class CarStrategy
+    include Strategic::Strategy
+    
     strategy_alias 'sedan'
   
     def move
-      position += 10
+      context.position += 10
     end
   end
 
-  attr_reader :position
+  attr_accessor :position
 
   def initialize(position)
     @position = position

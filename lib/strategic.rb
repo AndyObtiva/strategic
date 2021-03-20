@@ -18,7 +18,7 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+  
 module Strategic
   def self.included(klass)
     klass.extend(ClassMethods)
@@ -26,22 +26,6 @@ module Strategic
   end
 
   module ClassMethods
-    def strategy_alias(alias_string_or_class_or_object)
-      strategy_aliases << alias_string_or_class_or_object
-    end
-    
-    def strategy_aliases
-      @strategy_aliases ||= []
-    end
-  
-    def strategy_exclusion(exclusion_string_or_class_or_object)
-      strategy_exclusions << exclusion_string_or_class_or_object
-    end
-    
-    def strategy_exclusions
-      @strategy_exclusions ||= []
-    end
-    
     def strategy_matcher(&matcher_block)
       if block_given?
         @strategy_matcher = matcher_block
@@ -93,15 +77,17 @@ module Strategic
       end
     end
 
-    def new_strategy(string_or_class_or_object, *args, &block)
-      strategy_class_for(string_or_class_or_object).new(*args, &block)
+    def new_with_strategy(string_or_class_or_object, *args, &block)
+      new(*args, &block).tap do |model|
+        model.strategy = string_or_class_or_object
+      end
     end
 
     def strategies
       constants.map do |constant_symbol|
         const_get(constant_symbol)
       end.select do |constant|
-        constant.respond_to?(:ancestors) && constant.ancestors.include?(self)
+        constant.ancestors.include?(Strategic::Strategy) && constant.name.split('::').last != 'Strategy' # has to be something like PrefixStrategy
       end
     end
 
@@ -109,9 +95,22 @@ module Strategic
       strategies.map(&:strategy_name)
     end
     
-    def strategy_name
-      Strategic.underscore(name.split(':').last).sub(/_strategy$/, '')
-    end
+  end
+  
+  def strategy=(string_or_class_or_object)
+    @strategy = self.class.strategy_class_for(string_or_class_or_object).new(self)
+  end
+      
+  def strategy
+    @strategy
+  end
+
+  def strategy_class
+    strategy.class
+  end
+
+  def strategy_name
+    strategy_class.strategy_name
   end
 
   private
@@ -124,3 +123,5 @@ module Strategic
     text.chars.reduce('') {|output,c| !output.empty? && c.match(/[A-Z]/) ? output + '_' + c : output + c}.downcase
   end
 end
+
+require_relative 'strategic/strategy'

@@ -42,43 +42,43 @@ RSpec.describe Strategic do
     end
   end
 
-  describe '.new_strategy' do
+  describe '.new_with_strategy' do
     context 'strategy name' do
       it 'returns strategy' do
-        expect(MoveAction.new_strategy('car', position)).to be_a(MoveAction::CarStrategy)
-        expect(MoveAction.new_strategy('sedan', position)).to be_a(MoveAction::CarStrategy)
-        expect(MoveAction.new_strategy('MINI_VAN', position)).to be_a(MoveAction::MiniVanStrategy)
-        expect(MoveAction.new_strategy('invalid name returns default strategy', position)).to be_a(MoveAction)
-        
-        expect(MoveActionWithStrategyMatcher.new_strategy('Car', position)).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('sedan', position)).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('mini', position)).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
-        
-        expect(MoveActionWithStrategyMatcher.new_strategy('mini_van', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('mini_va', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('mini_v', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('mini_', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('min', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('mi', position)).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_strategy('m', position).class).to eq(MoveActionWithStrategyMatcher)
-        
-        expect(MoveActionWithStrategyMatcher.new_strategy('invalid name returns default strategy', position)).to be_a(MoveActionWithStrategyMatcher)
+        expect(MoveAction.new_with_strategy('car', position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy('sedan', position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy('MINI_VAN', position).strategy).to be_a(MoveAction::MiniVanStrategy)
+        expect(MoveAction.new_with_strategy('invalid name returns default strategy', position).strategy).to be_a(MoveAction)
+
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('Car', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('sedan', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_van', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_va', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_v', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('min', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mi', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('m', position).class).to eq(MoveActionWithStrategyMatcher)
+
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy).to be_a(MoveActionWithStrategyMatcher)
       end
     end
 
     context 'class name' do
       it 'returns strategy' do
-        expect(MoveAction.new_strategy(Car, position)).to be_a(MoveAction::CarStrategy)
-        expect(MoveAction.new_strategy(MiniVan, position)).to be_a(MoveAction::MiniVanStrategy)
-        expect(MoveAction.new_strategy(Vehicle, position)).to be_a(MoveAction)
+        expect(MoveAction.new_with_strategy(Car, position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy(MiniVan, position).strategy).to be_a(MoveAction::MiniVanStrategy)
+        expect(MoveAction.new_with_strategy(Vehicle, position).strategy).to be_a(MoveAction)
       end
     end
 
     context 'object type' do
       it 'returns strategy' do
-        expect(MoveAction.new_strategy(car, position)).to be_a(MoveAction::CarStrategy)
-        expect(MoveAction.new_strategy(mini_van, position)).to be_a(MoveAction::MiniVanStrategy)
-        expect(MoveAction.new_strategy(vehicle, position)).to be_a(MoveAction)
+        expect(MoveAction.new_with_strategy(car, position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy(mini_van, position).strategy).to be_a(MoveAction::MiniVanStrategy)
+        expect(MoveAction.new_with_strategy(vehicle, position).strategy).to be_a(MoveAction)
       end
     end
   end
@@ -100,5 +100,49 @@ RSpec.describe Strategic do
       expect(MoveAction::CarStrategy.strategy_name).to eq('car')
       expect(MoveAction::MiniVanStrategy.strategy_name).to eq('mini_van')
     end
+  end
+  
+  describe '#strategy=' do
+    let(:model) {MoveAction.new(position)}
+    xit 'sets strategy on model instance' do
+      model.strategy = 'car'
+      expect(model.strategy_class).to eq(MoveAction::CarStrategy)
+      expect(model.strategy).to be_a(MoveAction::CarStrategy)
+      expect(model.strategy.context).to eq(model)
+      model.move
+      expect(model.position).to eq(10)
+      
+      model.position = 0
+      model.strategy = 'sedan'
+      expect(model.strategy_class).to eq(MoveAction::CarStrategy)
+      expect(model.strategy).to be_a(MoveAction::CarStrategy)
+      expect(model.strategy.context).to eq(model)
+      model.move
+      expect(model.position).to eq(10)
+      
+      model.position = 0
+      model.strategy = 'MINI_VAN'
+      expect(model.strategy_class).to eq(MoveAction::MiniVanStrategy)
+      expect(model.strategy).to be_a(MoveAction::MiniVanStrategy)
+      expect(model.strategy.context).to eq(model)
+      model.move
+      expect(model.position).to eq(9)
+      
+      model.position = 0
+      model.strategy = 'invalid name returns default strategy'
+      expect(model.strategy_class).to be_nil
+      expect(model.strategy).to be_nil
+      model.move
+      expect(model.position).to eq(1)
+    end
+    
+    it 'sets strategy on model instance with initial strategy'
+    it 'sets strategy on model instance with strategy matcher'
+    
+    describe '::default_strategy' do
+      it 'declares default strategy on model class'
+    end
+    
+    
   end
 end

@@ -1,5 +1,7 @@
-class MoveAction::MiniVanStrategy < MoveAction
+class MoveAction::MiniVanStrategy
+  include Strategic::Strategy
+  
   def move
-    position += 9
+    context.position += 9
   end
 end

@@ -11,7 +11,9 @@ class MoveActionWithStrategyMatcher
     possible_keywords.include?(string_or_class_or_object)
   end
 
-  class CarStrategy < MoveActionWithStrategyMatcher
+  class CarStrategy
+    include Strategic::Strategy
+    
     strategy_alias 'sedan'
     strategy_alias 'mini'
     
