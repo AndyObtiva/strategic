@@ -104,12 +104,20 @@ module Strategic
     @strategy
   end
 
-  def strategy_class
-    strategy.class
+  def method_missing(method_name, *args, &block)
+    if strategy&.respond_to?(method_name, *args, &block)
+      strategy.send(method_name, *args, &block)
+    else
+      begin
+        super
+      rescue => e
+        raise "No strategy is set to handle the method #{method_name} with args #{args.inspect} and block #{block.inspect} / " + e.message
+      end
+    end
   end
-
-  def strategy_name
-    strategy_class.strategy_name
+    
+  def respond_to?(method_name, *args, &block)
+    strategy&.respond_to?(method_name, *args, &block) || super
   end
 
   private

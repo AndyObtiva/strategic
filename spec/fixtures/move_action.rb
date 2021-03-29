@@ -18,8 +18,4 @@ class MoveAction
   def initialize(position)
     @position = position
   end
-
-  def move
-    position += 1
-  end
 end

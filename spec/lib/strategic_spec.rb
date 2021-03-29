@@ -104,9 +104,8 @@ RSpec.describe Strategic do
   
   describe '#strategy=' do
     let(:model) {MoveAction.new(position)}
-    xit 'sets strategy on model instance' do
+    it 'sets strategy on model instance' do
       model.strategy = 'car'
-      expect(model.strategy_class).to eq(MoveAction::CarStrategy)
       expect(model.strategy).to be_a(MoveAction::CarStrategy)
       expect(model.strategy.context).to eq(model)
       model.move
@@ -114,7 +113,6 @@ RSpec.describe Strategic do
       
       model.position = 0
       model.strategy = 'sedan'
-      expect(model.strategy_class).to eq(MoveAction::CarStrategy)
       expect(model.strategy).to be_a(MoveAction::CarStrategy)
       expect(model.strategy.context).to eq(model)
       model.move
@@ -122,7 +120,6 @@ RSpec.describe Strategic do
       
       model.position = 0
       model.strategy = 'MINI_VAN'
-      expect(model.strategy_class).to eq(MoveAction::MiniVanStrategy)
       expect(model.strategy).to be_a(MoveAction::MiniVanStrategy)
       expect(model.strategy.context).to eq(model)
       model.move
@@ -130,10 +127,9 @@ RSpec.describe Strategic do
       
       model.position = 0
       model.strategy = 'invalid name returns default strategy'
-      expect(model.strategy_class).to be_nil
       expect(model.strategy).to be_nil
-      model.move
-      expect(model.position).to eq(1)
+      expect {model.move}.to raise_error
+      expect(model.position).to eq(0)
     end
     
     it 'sets strategy on model instance with initial strategy'

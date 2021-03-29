@@ -22,7 +22,6 @@ class MoveActionWithStrategyMatcher
       strategy_name = class_name.split('::').last.sub(/Strategy$/, '').gsub(/([A-Z])/) {|letter| "_#{letter.downcase}"}[1..-1]
       strategy_name.capitalize == string_or_class_or_object
     end
-    
   
     def move
       position += 10
@@ -33,9 +32,5 @@ class MoveActionWithStrategyMatcher
 
   def initialize(position)
     @position = position
-  end
-
-  def move
-    position += 1
   end
 end

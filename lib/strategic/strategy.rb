@@ -60,6 +60,10 @@ module Strategic
     def initialize(context)
       @context = context
     end
+    
+    def name
+      self.class.strategy_name
+    end
   
   end
 end
