@@ -43,70 +43,72 @@ alt="Strategic Example" />
 class TaxCalculator
   include Strategic
 
-  def tax_for(amount)
-    amount * 0.09
-  end
+  # strategies may implement a tax_for(amount) method
 end
 ```
 
 2. Now, you can add strategies under this directory without having to modify the original class: `tax_calculator`
 
-3. Add strategy classes under the namespace matching the original class name (`TaxCalculator`) and extending the original class (`TaxCalculator`) just to take advantage of default logic in it (this goes against the default Gang of Four Strategy Pattern, but was done out of convenience without the downsides of domain model inheritance since those subclasses are not used directly, yet via a strategy name string without conditionals or via a matcher for another object hierarchy):
+3. Add strategy classes with names ending as `Strategy` by convention (e.g. `UsStrategy`) under the namespace matching the original class name (`TaxCalculator::` as in `tax_calculator/us_strategy.rb` representing `TaxCalculator::UsStrategy`) and including the module (`Strategic::Strategy`):
+
+All strategies get access to their context (`Strategic` model instance), which they can use in their logic.
 
 ```ruby
-class TaxCalculator::UsStrategy < TaxCalculator
-  def initialize(state)
-    @state = state
-  end
+class TaxCalculator::UsStrategy
+  include Strategic::Strategy
+  
   def tax_for(amount)
-    amount * state_rate
+    amount * state_rate(context.state)
   end
   # ... more code follows
 end
 
 class TaxCalculator::CanadaStrategy < TaxCalculator
-  def initialize(province)
-    @province = province
-  end
+
   def tax_for(amount)
-    amount * (gst + qst)
+    amount * (gst(context.province) + qst(context.province))
   end
   # ... more code follows
 end
 ```
 
-4. In client code, obtain the needed strategy by underscored string reference (case-insensitive) minus the word strategy (e.g. UsStrategy becomes simply 'us'):
+(note: if you use strategy inheritance hierarchies, make sure to have strategy base classes end with `StrategyBase` to avoid getting picked up as strategies)
+
+4. In client code, set the strategy by underscored string reference minus the word strategy (e.g. UsStrategy becomes simply 'us'):
 
 ```ruby
-tax_calculator_strategy_class = TaxCalculator.strategy_class_for('us')
+tax_calculator = TaxCalculator.new(args)
+tax_calculator.strategy = 'us'
 ```
 
-5. Instantiate the strategy object:
+4a. Alternatively, instantiate the strategic object with a strategy to begin with:
 
 ```ruby
-tax_calculator_strategy = strategy_class.new('IL')
+tax_calculator = TaxCalculator.new_with_strategy('us', args)
 ```
 
-6. Invoke the strategy overridden method:
+5. Invoke the strategy implemented method:
 
 ```ruby
-tax = tax_calculator_strategy.tax_for(39.78)
-```
-
-**Alternative approach using `new_strategy(strategy_name, *initializer_args)`:**
-
-```ruby
-tax_calculator_strategy = TaxCalculator.new_strategy('US', 'IL')
-tax = tax_calculator_strategy.tax_for(39.78)
+tax = tax_calculator.tax_for(39.78)
 ```
 
 **Default strategy for a strategy name that has no strategy class is the superclass: `TaxCalculator`**
 
+You may set a default strategy on a `Strategic` model via class method `default_strategy`
+
 ```ruby
-tax_calculator_strategy_class = TaxCalculator.strategy_class_for('France')
-tax_calculator_strategy = tax_calculator_strategy_class.new
-tax = tax_calculator_strategy.tax_for(100.0) # returns 9.0 from TaxCalculator
+class TaxCalculator
+  include Strategic
+  
+  default_strategy 'canada'
+end
+
+tax_calculator = TaxCalculator.new(args)
+tax = tax_calculator.tax_for(39.78)
 ```
+
+If no strategy is selected and you try to invoke a method that belongs to strategies, Ruby raises an amended method missing error informing you that no strategy is set to handle the method (in case it was a strategy method).
 
 ## Setup
 
@@ -133,43 +135,37 @@ require 'strategic'
 ### Usage
 
 Steps:
-1. Have the original class you'd like to strategize include Strategic
-2. Create a directory matching the class underscored file name minus the '.rb' extension
-3. Create a strategy class under that directory, which:
+1. Have the original class you'd like to strategize include `Strategic` (e.g. `def TaxCalculator; include Strategic; end`
+2. Create a directory matching the class underscored file name minus the '.rb' extension (e.g. `tax_calculator/`)
+3. Create a strategy class under that directory (e.g. `tax_calculator/us_strategy.rb`), which:
  - Lives under the original class namespace
- - Extends the original class to strategize
+ - Includes the `Strategic::Strategy` module
  - Has a class name that ends with `Strategy` suffix (e.g. `NewCustomerStrategy`)
-4. Get needed strategy class using `strategy_class_for` class method taking strategy name (any case) or related object/type (can call `strategy_names` class method to obtain strategy names)
-5. Instantiate strategy with needed constructor parameters
+4. Set strategy on `Strategic` model using `strategy=` attribute writer method or instantiate with `new_with_strategy` class method, which takes a strategy name string (any case), strategy class, or mirror object (having a class matching strategy name minus the word `Strategy`) (note: you can call `::strategy_names` class method to obtain available strategy names or `::stratgies` to obtain available strategy classes)
 6. Invoke strategy method needed
-
-Alternative approach:
-
-Combine steps 4 and 5 using `new_strategy` method, which takes both strategy name
-and constructor parameters
-
-Passing an invalid strategy name to `strategy_class_for` returns original class as the default
-strategy.
 
 ## API
 
 - `StrategicClass::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects USStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
-- `StrategicClass::new_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
+- `StrategicClass::new_with_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
 - `StrategicClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
 - `StrategicClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
-- `StrategicClass::strategy_name`: returns parsed strategy name of current strategy class
+- `StrategicClass::strategy_matcher`: custom matcher for all strategies (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+- `StrategicClass#strategy=`: sets strategy
+- `StrategicClass#strategy`: returns current strategy
+- `StrategyClass::strategy_name`: returns parsed strategy name of current strategy class
+- `StrategyClass::strategy_matcher`: custom matcher for a specific strategy (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+- `StrategyClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
+- `StrategyClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
+- `StrategyClass#name`: returns strategy instance name (matching that of the class `strategy_name`)
+- `StrategyClass#context`: returns strategy context (the `Strategic` model instance)
 
-### Customization DSL
-
-These API methods are used more like DSL methods invoked in the class body of a strategy or a strategic superclass for all strategies:
-- `StrategicClass::strategy_matcher`: custom matcher to use instead of the built-in one that matches strategy name by convention (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
-- `StrategicClass::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
-- `StrategicClass::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
-
-Example:
+Example with customizations:
 
 ```ruby
 class TaxCalculator
+  default_strategy 'us'
+
   # fuzz matcher
   strategy_matcher do |string_or_class_or_object|
     class_name = self.name # current strategy class name being tested for matching
