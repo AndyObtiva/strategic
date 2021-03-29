@@ -60,9 +60,9 @@ RSpec.describe Strategic do
         expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
         expect(MoveActionWithStrategyMatcher.new_with_strategy('min', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
         expect(MoveActionWithStrategyMatcher.new_with_strategy('mi', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
-        expect(MoveActionWithStrategyMatcher.new_with_strategy('m', position).class).to eq(MoveActionWithStrategyMatcher)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('m', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
 
-        expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy).to be_nil
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Strategic do
       expect(model.position).to eq(0)
     end
     
-    it 'sets strategy on model instance with strategy matcher' do
+    it 'sets strategy on model instance with strategy matcher and default strategy' do
       model_with_strategy_matcher.strategy = 'car'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
@@ -199,21 +199,17 @@ RSpec.describe Strategic do
     
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'm'
-      expect(model_with_strategy_matcher.strategy).to be_nil
-      expect {model_with_strategy_matcher.move}.to raise_error
-      expect(model_with_strategy_matcher.position).to eq(0)
+      expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+      expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
+      model_with_strategy_matcher.move
+      expect(model_with_strategy_matcher.position).to eq(1)
     
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'invalid name returns default strategy'
-      expect(model_with_strategy_matcher.strategy).to be_nil
-      expect {model_with_strategy_matcher.move}.to raise_error
-      expect(model_with_strategy_matcher.position).to eq(0)
+      expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+      expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
+      model_with_strategy_matcher.move
+      expect(model_with_strategy_matcher.position).to eq(1)
     end
-    
-    describe '::default_strategy' do
-      it 'declares default strategy on model class'
-    end
-    
-    
   end
 end

@@ -27,10 +27,18 @@ module Strategic
 
   module ClassMethods
     def strategy_matcher(&matcher_block)
-      if block_given?
-        @strategy_matcher = matcher_block
-      else
+      if matcher_block.nil?
         @strategy_matcher
+      else
+        @strategy_matcher = matcher_block
+      end
+    end
+    
+    def default_strategy(string_or_class_or_object = nil)
+      if string_or_class_or_object.nil?
+        @default_strategy
+      else
+        @default_strategy = strategy_class_for(string_or_class_or_object)
       end
     end
     
@@ -49,6 +57,7 @@ module Strategic
     def strategy_class_for(string_or_class_or_object)
       strategy_class = strategy_matcher_for_any_strategy? ? strategy_class_with_strategy_matcher(string_or_class_or_object) : strategy_class_without_strategy_matcher(string_or_class_or_object)
       strategy_class ||= strategies.detect { |strategy| strategy.strategy_aliases.include?(string_or_class_or_object) }
+      strategy_class ||= default_strategy
     end
     
     def strategy_class_with_strategy_matcher(string_or_class_or_object)

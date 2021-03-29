@@ -3,6 +3,8 @@ require 'strategic'
 class MoveActionWithStrategyMatcher
   include Strategic
   
+  default_strategy 'simple'
+  
   strategy_matcher do |string_or_class_or_object, strategy_class|
     class_name = self.name
     strategy_name = class_name.split('::').last.sub(/Strategy$/, '').gsub(/([A-Z])/) {|letter| "_#{letter.downcase}"}[1..-1]
