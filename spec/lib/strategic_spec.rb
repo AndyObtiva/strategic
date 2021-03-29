@@ -63,6 +63,7 @@ RSpec.describe Strategic do
         expect(MoveActionWithStrategyMatcher.new_with_strategy('m', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
 
         expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
       end
     end
 
@@ -133,6 +134,12 @@ RSpec.describe Strategic do
       
       model.position = 0
       model.strategy = 'invalid name returns default strategy'
+      expect(model.strategy).to be_nil
+      expect {model.move}.to raise_error
+      expect(model.position).to eq(0)
+      
+      model.position = 0
+      model.strategy = ''
       expect(model.strategy).to be_nil
       expect {model.move}.to raise_error
       expect(model.position).to eq(0)
@@ -210,6 +217,13 @@ RSpec.describe Strategic do
     
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'invalid name returns default strategy'
+      expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+      expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
+      model_with_strategy_matcher.move
+      expect(model_with_strategy_matcher.position).to eq(1)
+    
+      model_with_strategy_matcher.position = 0
+      model_with_strategy_matcher.strategy = ''
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move

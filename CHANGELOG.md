@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.1
+
+- Fix error "undefined method `new' for Strategic::Strategy:Module" that occurs when setting an empty string strategy
+
 ## 1.0.0
 
 - Improve design to better match the authentic Gang of Four Strategy Pattern with `Strategic::Strategy` module, removing the need for inheritance.

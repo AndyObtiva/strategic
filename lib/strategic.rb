@@ -77,6 +77,7 @@ module Strategic
       else
         strategy_class_name = string_or_class_or_object.class.name
       end
+      return nil if strategy_class_name.to_s.strip.empty?
       begin
         class_name = "::#{self.name}::#{Strategic.classify(strategy_class_name)}Strategy"
         class_eval(class_name)
