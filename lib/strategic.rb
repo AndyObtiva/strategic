@@ -49,7 +49,6 @@ module Strategic
     def strategy_class_for(string_or_class_or_object)
       strategy_class = strategy_matcher_for_any_strategy? ? strategy_class_with_strategy_matcher(string_or_class_or_object) : strategy_class_without_strategy_matcher(string_or_class_or_object)
       strategy_class ||= strategies.detect { |strategy| strategy.strategy_aliases.include?(string_or_class_or_object) }
-      strategy_class ||= self
     end
     
     def strategy_class_with_strategy_matcher(string_or_class_or_object)
@@ -98,7 +97,7 @@ module Strategic
   end
   
   def strategy=(string_or_class_or_object)
-    @strategy = self.class.strategy_class_for(string_or_class_or_object).new(self)
+    @strategy = self.class.strategy_class_for(string_or_class_or_object)&.new(self)
   end
       
   def strategy
