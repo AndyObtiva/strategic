@@ -91,7 +91,11 @@ RSpec.describe Strategic do
 
   describe '::strategy_names' do
     it 'returns all loaded strategy names' do
-      expect(MoveAction.strategy_names).to match_array(['car', 'mini_van'])
+      expect(MoveAction.strategy_names).to eq(['car', 'mini_van'])
+    end
+    
+    it 'returns all loaded strategy names for model with custom strategy matcher' do
+      expect(MoveActionWithStrategyMatcher.strategy_names).to eq(['car', 'mini_van', 'simple'])
     end
   end
 

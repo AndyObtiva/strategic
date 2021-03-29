@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.0
+
+- Improve design to better match the authentic Gang of Four Strategy Pattern with `Strategic::Strategy` module, removing the need for inheritance.
+- `#strategy=`/`#strategy` enable setting/getting strategy on model
+- `#context` enables getting strategic model instance on strategy just as per the GOF Design Pattern
+- `default_strategy` class body method to set default strategy
+- Filter strategies by ones ending with `Strategy` in class name
+
 ## 0.9.1
 
 - `strategy_name` returns parsed strategy name of current strategy class

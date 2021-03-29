@@ -95,8 +95,8 @@ module Strategic
       constants.map do |constant_symbol|
         const_get(constant_symbol)
       end.select do |constant|
-        constant.ancestors.include?(Strategic::Strategy) && constant.name.split('::').last != 'Strategy' # has to be something like PrefixStrategy
-      end
+        constant.ancestors.include?(Strategic::Strategy) && constant.name.split('::').last.end_with?('Strategy') && constant.name.split('::').last != 'Strategy' # has to be something like PrefixStrategy
+      end.sort_by(&:strategy_name)
     end
 
     def strategy_names

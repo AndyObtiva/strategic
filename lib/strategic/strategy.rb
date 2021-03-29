@@ -61,9 +61,5 @@ module Strategic
       @context = context
     end
     
-    def name
-      self.class.strategy_name
-    end
-  
   end
 end

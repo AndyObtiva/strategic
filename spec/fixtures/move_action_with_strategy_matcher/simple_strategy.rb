@@ -1,7 +1,4 @@
-class MoveActionWithStrategyMatcher::SimpleStrategy
-  include Strategic::Strategy
-  
-  def move
-    context.position += 1
-  end
+require_relative 'strategy_base'
+
+class MoveActionWithStrategyMatcher::SimpleStrategy < MoveActionWithStrategyMatcher::StrategyBase
 end
