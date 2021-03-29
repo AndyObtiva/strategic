@@ -24,11 +24,11 @@ class MoveActionWithStrategyMatcher
     end
   
     def move
-      position += 10
+      context.position += 10
     end
   end
 
-  attr_reader :position
+  attr_accessor :position
 
   def initialize(position)
     @position = position
