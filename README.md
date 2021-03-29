@@ -92,7 +92,7 @@ tax_calculator = TaxCalculator.new_with_strategy('us', args)
 tax = tax_calculator.tax_for(39.78)
 ```
 
-**Default strategy for a strategy name that has no strategy class is the superclass: `TaxCalculator`**
+Default strategy for a strategy name that has no strategy class is `nil`
 
 You may set a default strategy on a strategic model via class method `default_strategy`
 
