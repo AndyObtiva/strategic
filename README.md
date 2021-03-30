@@ -145,21 +145,44 @@ Steps:
 
 ## API
 
-- `StrategicClass::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
-- `StrategicClass::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
-- `StrategicClass::new_with_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
-- `StrategicClass::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
-- `StrategicClass::default_strategy`: (used in model class body) sets default strategy as a strategy name string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
-- `StrategicClass::strategy_matcher`: (used in model class body) custom matcher for all strategies (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
-- `StrategicClass#strategy=`: sets strategy
-- `StrategicClass#strategy`: returns current strategy
-- `StrategyClass::strategy_name`: returns parsed strategy name of current strategy class
-- `StrategyClass::strategy_matcher`: (used in model class body) custom matcher for a specific strategy (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
-- `StrategyClass::strategy_exclusion`: (used in model class body) exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
-- `StrategyClass::strategy_alias`: (used in model class body) alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
-- `StrategyClass#context`: returns strategy context (the strategic model instance)
+### Strategic model
 
-Example with customizations via class body methods:
+#### Class Body Methods
+
+These methods can be delcared in a strategic model class body.
+
+- `::default_strategy`: sets default strategy as a strategy name string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+- `::strategy_matcher`: custom matcher for all strategies (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+
+#### Class Methods
+
+- `::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
+- `::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
+- `::new_with_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
+- `::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+
+#### Instance Methods
+
+- `#strategy=`: sets strategy
+- `#strategy`: returns current strategy
+
+### Strategy
+
+#### Class Body Methods
+
+- `::strategy_matcher`: custom matcher for a specific strategy (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
+- `::strategy_exclusion`: exclusion from custom matcher (e.g. `strategy_exclusion 'Cio'`)
+- `::strategy_alias`: alias for strategy in addition to strategy's name derived from class name by convention (e.g. `strategy_alias 'USA'` for `UsStrategy`)
+
+#### Class Methods
+
+- `::strategy_name`: returns parsed strategy name of current strategy class
+
+#### Instance Methods
+
+- `#context`: returns strategy context (the strategic model instance)
+
+### Example with Customizations via Class Body Methods
 
 ```ruby
 class TaxCalculator
