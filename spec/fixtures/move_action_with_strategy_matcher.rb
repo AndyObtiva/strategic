@@ -5,6 +5,8 @@ class MoveActionWithStrategyMatcher
   
   NON_CLASS_CONSTANT = 23 # tests that it is excluded when discovring strategies
   
+  attr_accessor :strategy_name # fakes that a Rails ActiveRecord already has strategy_name column
+  
   default_strategy 'simple'
   
   strategy_matcher do |string_or_class_or_object, strategy_class|

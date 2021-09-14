@@ -1,4 +1,4 @@
-# Strategic 1.0.1
+# Strategic 1.1.0
 ## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![rspec](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml/badge.svg)](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml)
@@ -116,7 +116,7 @@ If no strategy is selected and you try to invoke a method that belongs to strate
 Add the following to bundler's `Gemfile`.
 
 ```ruby
-gem 'strategic', '~> 1.0.1'
+gem 'strategic', '~> 1.1.0'
 ```
 
 ### Option 2: Manual
@@ -124,7 +124,7 @@ gem 'strategic', '~> 1.0.1'
 Or manually install and require library.
 
 ```bash
-gem install strategic -v1.0.1
+gem install strategic -v1.1.0
 ```
 
 ```ruby

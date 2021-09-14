@@ -108,14 +108,28 @@ module Strategic
     
   end
   
+  begin
+    instance_method(:strategy_name)
+  rescue
+    attr_reader :strategy_name
+  end
+
+  begin
+    instance_method(:strategy_name=)
+  rescue
+    attr_writer :strategy_name
+  end
+  
   def strategy=(string_or_class_or_object)
-    @strategy = self.class.strategy_class_for(string_or_class_or_object)&.new(self)
+    strategy_class = self.class.strategy_class_for(string_or_class_or_object)
+    self.strategy_name = strategy_class&.strategy_name if respond_to?(:strategy_name=)
+    @strategy = strategy_class&.new(self)
   end
       
   def strategy
     @strategy
   end
-
+  
   def method_missing(method_name, *args, &block)
     if strategy&.respond_to?(method_name, *args, &block)
       strategy.send(method_name, *args, &block)

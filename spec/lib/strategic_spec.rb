@@ -46,13 +46,20 @@ RSpec.describe Strategic do
     context 'strategy name' do
       it 'returns strategy' do
         expect(MoveAction.new_with_strategy('car', position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy('car', position).strategy_name).to eq('car')
         expect(MoveAction.new_with_strategy('sedan', position).strategy).to be_a(MoveAction::CarStrategy)
+        expect(MoveAction.new_with_strategy('sedan', position).strategy_name).to eq('car')
         expect(MoveAction.new_with_strategy('MINI_VAN', position).strategy).to be_a(MoveAction::MiniVanStrategy)
+        expect(MoveAction.new_with_strategy('MINI_VAN', position).strategy_name).to eq('mini_van')
         expect(MoveAction.new_with_strategy('invalid name returns default strategy', position).strategy).to be_nil
+        expect(MoveAction.new_with_strategy('invalid name returns default strategy', position).strategy_name).to be_nil
 
         expect(MoveActionWithStrategyMatcher.new_with_strategy('Car', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('Car', position).strategy_name).to eq('car')
         expect(MoveActionWithStrategyMatcher.new_with_strategy('sedan', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('sedan', position).strategy_name).to eq('car')
         expect(MoveActionWithStrategyMatcher.new_with_strategy('mini', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('mini', position).strategy_name).to eq('car')
 
         expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_van', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
         expect(MoveActionWithStrategyMatcher.new_with_strategy('mini_va', position).strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
@@ -63,7 +70,9 @@ RSpec.describe Strategic do
         expect(MoveActionWithStrategyMatcher.new_with_strategy('m', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
 
         expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy_name).to eq('simple')
         expect(MoveActionWithStrategyMatcher.new_with_strategy('', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_strategy('', position).strategy_name).to eq('simple')
       end
     end
 
@@ -114,6 +123,7 @@ RSpec.describe Strategic do
     it 'sets strategy on model instance' do
       model.strategy = 'car'
       expect(model.strategy).to be_a(MoveAction::CarStrategy)
+      expect(model.strategy_name).to eq('car')
       expect(model.strategy.context).to eq(model)
       model.move
       expect(model.position).to eq(10)
@@ -121,6 +131,7 @@ RSpec.describe Strategic do
       model.position = 0
       model.strategy = 'sedan'
       expect(model.strategy).to be_a(MoveAction::CarStrategy)
+      expect(model.strategy_name).to eq('car')
       expect(model.strategy.context).to eq(model)
       model.move
       expect(model.position).to eq(10)
@@ -128,6 +139,7 @@ RSpec.describe Strategic do
       model.position = 0
       model.strategy = 'MINI_VAN'
       expect(model.strategy).to be_a(MoveAction::MiniVanStrategy)
+      expect(model.strategy_name).to eq('mini_van')
       expect(model.strategy.context).to eq(model)
       model.move
       expect(model.position).to eq(9)
@@ -135,12 +147,14 @@ RSpec.describe Strategic do
       model.position = 0
       model.strategy = 'invalid name returns default strategy'
       expect(model.strategy).to be_nil
+      expect(model.strategy_name).to be_nil
       expect {model.move}.to raise_error
       expect(model.position).to eq(0)
       
       model.position = 0
       model.strategy = ''
       expect(model.strategy).to be_nil
+      expect(model.strategy_name).to be_nil
       expect {model.move}.to raise_error
       expect(model.position).to eq(0)
     end
@@ -148,6 +162,7 @@ RSpec.describe Strategic do
     it 'sets strategy on model instance with strategy matcher and default strategy' do
       model_with_strategy_matcher.strategy = 'car'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('car')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(10)
@@ -155,6 +170,7 @@ RSpec.describe Strategic do
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'sedan'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('car')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(10)
@@ -162,6 +178,7 @@ RSpec.describe Strategic do
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'mini'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('car')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(10)
@@ -169,6 +186,7 @@ RSpec.describe Strategic do
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'mini_van'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::MiniVanStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('mini_van')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(9)
@@ -218,6 +236,7 @@ RSpec.describe Strategic do
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = 'invalid name returns default strategy'
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('simple')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(1)
@@ -225,6 +244,7 @@ RSpec.describe Strategic do
       model_with_strategy_matcher.position = 0
       model_with_strategy_matcher.strategy = ''
       expect(model_with_strategy_matcher.strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+      expect(model_with_strategy_matcher.strategy_name).to eq('simple')
       expect(model_with_strategy_matcher.strategy.context).to eq(model_with_strategy_matcher)
       model_with_strategy_matcher.move
       expect(model_with_strategy_matcher.position).to eq(1)
