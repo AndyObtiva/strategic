@@ -1,11 +1,25 @@
 require 'strategic'
 
 class MoveActionWithStrategyMatcher
-  include Strategic
-  
   NON_CLASS_CONSTANT = 23 # tests that it is excluded when discovring strategies
   
-  attr_accessor :strategy_name # fakes that a Rails ActiveRecord already has strategy_name column
+  # fakes that a Rails ActiveRecord already has strategy_name column
+  attr_reader :strategy_name
+  class << self
+    def column_names
+      ['strategy_name']
+    end
+        
+    def after_initialize(method_symbol = nil)
+      if method_symbol.nil?
+        @after_initialize
+      else
+        @after_initialize = method_symbol
+      end
+    end
+  end
+    
+  include Strategic
   
   default_strategy 'simple'
   
@@ -38,5 +52,10 @@ class MoveActionWithStrategyMatcher
 
   def initialize(position)
     @position = position
+  end
+
+  # simulate Rails []= method
+  def []=(key, value)
+    instance_variable_set("@#{key}", value)
   end
 end

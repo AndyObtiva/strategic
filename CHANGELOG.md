@@ -4,6 +4,7 @@
 
 - Generate `strategy_name` attribute on `Strategic` class if it does not already exist like in the case of a Rails migration column
 - Automatically set `strategy_name` attribute when setting `strategy` attribute (either `strategy_name` attribute in Ruby or column in Rails)
+- Load `strategy` attribute from `strategy_name` attribute on `after_initialize` in Rails
 
 ## 1.0.1
 

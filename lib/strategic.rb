@@ -23,6 +23,31 @@ module Strategic
   def self.included(klass)
     klass.extend(ClassMethods)
     klass.require_strategies
+    rails_mode = klass.respond_to?(:column_names) && klass.column_names.include?('strategy_name')
+    if rails_mode
+      klass.include(ExtraRailsMethods)
+      klass.after_initialize :reload_strategy
+    else
+      klass.include(ExtraRubyMethods)
+    end
+  end
+  
+  module ExtraRailsMethods
+    def strategy_name=(string)
+      self['strategy_name'] = string
+      strategy_class = self.class.strategy_class_for(string)
+      @strategy = strategy_class&.new(self)
+    end
+  end
+  
+  module ExtraRubyMethods
+    attr_reader :strategy_name
+    
+    def strategy_name=(string)
+      @strategy_name = string
+      strategy_class = self.class.strategy_class_for(string)
+      @strategy = strategy_class&.new(self)
+    end
   end
 
   module ClassMethods
@@ -108,26 +133,17 @@ module Strategic
     
   end
   
-  begin
-    instance_method(:strategy_name)
-  rescue
-    attr_reader :strategy_name
-  end
-
-  begin
-    instance_method(:strategy_name=)
-  rescue
-    attr_writer :strategy_name
-  end
-  
   def strategy=(string_or_class_or_object)
     strategy_class = self.class.strategy_class_for(string_or_class_or_object)
-    self.strategy_name = strategy_class&.strategy_name if respond_to?(:strategy_name=)
-    @strategy = strategy_class&.new(self)
+    self.strategy_name = strategy_class&.strategy_name
   end
       
   def strategy
     @strategy
+  end
+  
+  def reload_strategy
+    self.strategy = strategy_name
   end
   
   def method_missing(method_name, *args, &block)

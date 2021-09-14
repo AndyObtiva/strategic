@@ -28,7 +28,7 @@ code (Open/Closed Principle).
 externalizing all logic concerning algorithmic variations into separate strategy
 classes that are easy to find, maintain and extend while honoring the Open/Closed Principle and avoiding conditionals.
 
-In summary, if you make a class called `TaxCalculator` strategic by including the `Strategic` mixin module, now you are able to drop strategies under the `tax_calculator` directory sitting next to the class (e.g. `tax_calculator/us_strategy.rb`, `tax_calculator/canada_strategy.rb`) while gaining extra [API](#api) methods to grab strategy names to present in a user interface (`.strategy_names`), set a strategy (`#strategy=(strategy_name)`), and/or instantiate `TaxCalculator` directly with a strategy from the get-go (`.new_with_strategy(strategy_name, *initialize_args)`). Finally, you can simply invoke strategy methods on the main strategic model (e.g. `tax_calculator.tax_for(39.78)`).
+In summary, if you make a class called `TaxCalculator` strategic by including the `Strategic` mixin module, now you are able to drop strategies under the `tax_calculator` directory sitting next to the class (e.g. `tax_calculator/us_strategy.rb`, `tax_calculator/canada_strategy.rb`) while gaining extra [API](#api) methods to grab strategy names to present in a user interface (`.strategy_names`), set a strategy (`#strategy=(strategy_name)` or `#strategy_name=(strategy_name)`), and/or instantiate `TaxCalculator` directly with a strategy from the get-go (`.new_with_strategy(strategy_name, *initialize_args)`). Finally, you can simply invoke strategy methods on the main strategic model (e.g. `tax_calculator.tax_for(39.78)`).
 
 ### Example
 
@@ -86,6 +86,12 @@ tax_calculator.strategy = 'us'
 tax_calculator = TaxCalculator.new_with_strategy('us', args)
 ```
 
+4b. Alternatively in Rails, instantiate or create an ActiveRecord model with `strategy_name` column attribute included in args (you may generate migration for `strategy_name` column via `rails g migration add_strategy_name_to_resources strategy_name:string`):
+
+```ruby
+tax_calculator = TaxCalculator.create(args) # args include strategy_name
+```
+
 5. Invoke the strategy implemented method:
 
 ```ruby
@@ -141,6 +147,7 @@ Steps:
  - Includes the `Strategic::Strategy` module
  - Has a class name that ends with `Strategy` suffix (e.g. `NewCustomerStrategy`)
 4. Set strategy on strategic model using `strategy=` attribute writer method or instantiate with `new_with_strategy` class method, which takes a strategy name string (any case), strategy class, or mirror object (having a class matching strategy name minus the word `Strategy`) (note: you can call `::strategy_names` class method to obtain available strategy names or `::stratgies` to obtain available strategy classes)
+5. Alternatively in Rails, create migration `rails g migration add_strategy_name_to_resources strategy_name:string` and set strategy via `strategy_name` column, storing in database. On load of the model, the right strategy is automatically loaded based on `strategy_name` column.
 6. Invoke strategy method needed
 
 ## API
