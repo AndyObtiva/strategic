@@ -3,6 +3,8 @@ require 'strategic'
 class MoveActionWithStrategyMatcher
   include Strategic
   
+  NON_CLASS_CONSTANT = 23 # tests that it is excluded when discovring strategies
+  
   default_strategy 'simple'
   
   strategy_matcher do |string_or_class_or_object, strategy_class|

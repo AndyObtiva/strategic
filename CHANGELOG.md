@@ -2,7 +2,8 @@
 
 ## 1.0.1
 
-- Fix error "undefined method `new' for Strategic::Strategy:Module" that occurs when setting an empty string strategy
+- Fix error "undefined method `new' for Strategic::Strategy:Module" that occurs when setting an empty string strategy (must return nil or default strategy)
+- Fix issue with `ancestors` method not available on all constants (only ones that are classes/modules)
 
 ## 1.0.0
 

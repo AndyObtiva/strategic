@@ -1,7 +1,5 @@
 # TODO
 
-- Fix issue with ancestors method not being available on all constants (only ones that are classes/modules)
-- Handle empty value with strategy_class_without_strategy_matcher
 - Set strategy_name when setting strategy attribute (to store strategy_name column in Rails)
 - Support generating strategy_name migration
 - Customize strategy_name attribute name (e.g. sort_strategy_name)

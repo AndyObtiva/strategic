@@ -3,6 +3,8 @@ require 'strategic'
 class MoveAction
   include Strategic
   
+  NON_CLASS_CONSTANT = 23 # tests that it is excluded when discovring strategies
+  
   class CarStrategy
     include Strategic::Strategy
     
