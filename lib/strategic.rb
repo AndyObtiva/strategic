@@ -30,6 +30,7 @@ module Strategic
     else
       klass.include(ExtraRubyMethods)
     end
+    klass.default_strategy 'default'
   end
   
   module ExtraRailsMethods
@@ -108,6 +109,12 @@ module Strategic
         class_eval(class_name)
       rescue NameError
         # No Op
+      end
+    end
+
+    def new_with_default_strategy(*args, &block)
+      new(*args, &block).tap do |model|
+        model.strategy = nil
       end
     end
 

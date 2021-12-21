@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.2.0
+
+- `default_strategy` default value will be `'default'`, assuming a `model_namespace/default_strategy.rb` file with `DefaultStrategy` class
+- `new_with_default_strategy` class method (instantiating with `'default'` strategy if not configured or `default_strategy` class method value if configured)
+
 ## 1.1.0
 
 - Generate `strategy_name` attribute on `Strategic` class if it does not already exist like in the case of a Rails migration column

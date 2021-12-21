@@ -1,4 +1,4 @@
-# Strategic 1.1.0
+# Strategic 1.2.0
 ## Painless Strategy Pattern in Ruby and Rails
 [![Gem Version](https://badge.fury.io/rb/strategic.svg)](http://badge.fury.io/rb/strategic)
 [![rspec](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml/badge.svg)](https://github.com/AndyObtiva/strategic/actions/workflows/ruby.yml)
@@ -28,7 +28,7 @@ code (Open/Closed Principle).
 externalizing all logic concerning algorithmic variations into separate strategy
 classes that are easy to find, maintain and extend while honoring the Open/Closed Principle and avoiding conditionals.
 
-In summary, if you make a class called `TaxCalculator` strategic by including the `Strategic` mixin module, now you are able to drop strategies under the `tax_calculator` directory sitting next to the class (e.g. `tax_calculator/us_strategy.rb`, `tax_calculator/canada_strategy.rb`) while gaining extra [API](#api) methods to grab strategy names to present in a user interface (`.strategy_names`), set a strategy (`#strategy=(strategy_name)` or `#strategy_name=(strategy_name)`), and/or instantiate `TaxCalculator` directly with a strategy from the get-go (`.new_with_strategy(strategy_name, *initialize_args)`). Finally, you can simply invoke strategy methods on the main strategic model (e.g. `tax_calculator.tax_for(39.78)`).
+In summary, if you make a class called `TaxCalculator` strategic by including the `Strategic` mixin module, now you are able to drop strategies under the `tax_calculator` directory sitting next to the class (e.g. `tax_calculator/us_strategy.rb`, `tax_calculator/canada_strategy.rb`) while gaining extra [API](#api) methods to grab strategy names to present in a user interface (`.strategy_names`), set a strategy (`#strategy=(strategy_name)` or `#strategy_name=(strategy_name)`), and/or instantiate `TaxCalculator` directly (`.new(*initialize_args)`), with default strategy (`.new_with_default_strategy(*initialize_args)`), or with a strategy from the get-go (`.new_with_strategy(strategy_name, *initialize_args)`). Finally, you can simply invoke strategy methods on the main strategic model (e.g. `tax_calculator.tax_for(39.78)`).
 
 ### Example
 
@@ -98,9 +98,9 @@ tax_calculator = TaxCalculator.create(args) # args include strategy_name
 tax = tax_calculator.tax_for(39.78)
 ```
 
-Default strategy for a strategy name that has no strategy class is `nil`
+Default strategy for a strategy name that has no strategy class is `nil` unless `DefaultStrategy` class exists under the model class namespace or `default_strategy` class attribute is set.
 
-You may set a default strategy on a strategic model via class method `default_strategy`
+This is how to set a default strategy on a strategic model via class method `default_strategy`:
 
 ```ruby
 class TaxCalculator
@@ -122,7 +122,7 @@ If no strategy is selected and you try to invoke a method that belongs to strate
 Add the following to bundler's `Gemfile`.
 
 ```ruby
-gem 'strategic', '~> 1.1.0'
+gem 'strategic', '~> 1.2.0'
 ```
 
 ### Option 2: Manual
@@ -130,7 +130,7 @@ gem 'strategic', '~> 1.1.0'
 Or manually install and require library.
 
 ```bash
-gem install strategic -v1.1.0
+gem install strategic -v1.2.0
 ```
 
 ```ruby
@@ -142,7 +142,7 @@ require 'strategic'
 Steps:
 1. Have the original class you'd like to strategize include `Strategic` (e.g. `def TaxCalculator; include Strategic; end`
 2. Create a directory matching the class underscored file name minus the '.rb' extension (e.g. `tax_calculator/`)
-3. Create a strategy class under that directory (e.g. `tax_calculator/us_strategy.rb`), which:
+3. Create a strategy class under that directory (e.g. `tax_calculator/us_strategy.rb`) (default is assumed as `tax_calculator/default_strategy.rb` unless customized with `default_strategy` class method):
  - Lives under the original class namespace
  - Includes the `Strategic::Strategy` module
  - Has a class name that ends with `Strategy` suffix (e.g. `NewCustomerStrategy`)
@@ -158,7 +158,8 @@ Steps:
 
 These methods can be delcared in a strategic model class body.
 
-- `::default_strategy`: sets default strategy as a strategy name string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+- `::default_strategy(strategy_name)`: sets default strategy as a strategy name string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
+- `::default_strategy`: returns default strategy (default: `'default'` as in `DefaultStrategy`)
 - `::strategy_matcher`: custom matcher for all strategies (e.g. `strategy_matcher {|string| string.start_with?('C') && string.end_with?('o')}`)
 
 #### Class Methods
@@ -166,6 +167,7 @@ These methods can be delcared in a strategic model class body.
 - `::strategy_names`: returns list of strategy names (strings) discovered by convention (nested under a namespace matching the superclass name)
 - `::strategies`: returns list of strategies discovered by convention (nested under a namespace matching the superclass name)
 - `::new_with_strategy(string_or_class_or_object, *args, &block)`: instantiates a strategy based on a string/class/object and strategy constructor args
+- `::new_with_default_strategy(*args, &block)`: instantiates with default strategy
 - `::strategy_class_for(string_or_class_or_object)`: selects a strategy class based on a string (e.g. 'us' selects UsStrategy) or alternatively a class/object if you have a mirror hierarchy for the strategy hierarchy
 
 #### Instance Methods

@@ -14,4 +14,5 @@ group :development do
   gem 'simplecov', '~> 0.16.1', require: false
   gem 'coveralls', '~> 0.8.23', require: false
   gem 'puts_debuggerer', '>= 0.8.1'
+  gem 'rake-tui', '> 0'
 end

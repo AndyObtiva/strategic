@@ -4,6 +4,7 @@ require_relative '../fixtures/car'
 require_relative '../fixtures/mini_van'
 require_relative '../fixtures/move_action'
 require_relative '../fixtures/move_action_with_strategy_matcher'
+require_relative '../fixtures/move_action_with_implicit_default_strategy'
 
 RSpec.describe Strategic do
   let(:vehicle_attributes) { {make: 'NASA', model: 'Mars Curiosity Rover'} }
@@ -53,6 +54,8 @@ RSpec.describe Strategic do
         expect(MoveAction.new_with_strategy('MINI_VAN', position).strategy_name).to eq('mini_van')
         expect(MoveAction.new_with_strategy('invalid name returns default strategy', position).strategy).to be_nil
         expect(MoveAction.new_with_strategy('invalid name returns default strategy', position).strategy_name).to be_nil
+        expect(MoveAction.new_with_default_strategy(position).strategy).to be_nil
+        expect(MoveAction.new_with_default_strategy(position).strategy_name).to be_nil
 
         expect(MoveActionWithStrategyMatcher.new_with_strategy('Car', position).strategy).to be_a(MoveActionWithStrategyMatcher::CarStrategy)
         expect(MoveActionWithStrategyMatcher.new_with_strategy('Car', position).strategy_name).to eq('car')
@@ -73,6 +76,11 @@ RSpec.describe Strategic do
         expect(MoveActionWithStrategyMatcher.new_with_strategy('invalid name returns default strategy', position).strategy_name).to eq('simple')
         expect(MoveActionWithStrategyMatcher.new_with_strategy('', position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
         expect(MoveActionWithStrategyMatcher.new_with_strategy('', position).strategy_name).to eq('simple')
+        expect(MoveActionWithStrategyMatcher.new_with_default_strategy(position).strategy).to be_a(MoveActionWithStrategyMatcher::SimpleStrategy)
+        expect(MoveActionWithStrategyMatcher.new_with_default_strategy(position).strategy_name).to eq('simple')
+        
+        expect(MoveActionWithImplicitDefaultStrategy.new_with_strategy('').strategy_name).to eq('default')
+        expect(MoveActionWithImplicitDefaultStrategy.new_with_default_strategy.strategy_name).to eq('default')
       end
     end
 
