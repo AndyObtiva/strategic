@@ -20,15 +20,36 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   
 module Strategic
-  def self.included(klass)
-    klass.extend(ClassMethods)
-    klass.require_strategies
-    rails_mode = klass.respond_to?(:column_names) && klass.column_names.include?('strategy_name')
-    if rails_mode
-      klass.include(ExtraRailsMethods)
-      klass.after_initialize :reload_strategy
-    else
-      klass.include(ExtraRubyMethods)
+  class << self
+    attr_reader :rails_auto_strategic
+    alias rails_auto_strategic? rails_auto_strategic
+  
+    def included(klass)
+      klass.extend(ClassMethods)
+      klass.require_strategies
+      rails_mode = klass.respond_to?(:column_names) && klass.column_names.include?('strategy_name')
+      if rails_mode
+        klass.include(ExtraRailsMethods)
+        klass.after_initialize :reload_strategy
+      else
+        klass.include(ExtraRubyMethods)
+      end
+    end
+    
+    def rails_auto_strategic=(value)
+      enabled = @rails_auto_strategic.nil? && value
+      @rails_auto_strategic = value
+      if enabled
+        ApplicationRecord.class_eval do
+          class << self
+            alias inherited_without_strategic inherited
+            def inherited(klass)
+              inherited_without_strategic(klass)
+              klass.include(Strategic)
+            end
+          end
+        end
+      end
     end
   end
   
