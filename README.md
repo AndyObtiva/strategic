@@ -41,7 +41,7 @@ alt="Strategic Example" />
 class TaxCalculator
   include Strategic
 
-  # strategies may implement a tax_for(amount) method
+  # strategies implement tax_for(amount) method that can be invoked indirectly on strategic model
 end
 ```
 
@@ -98,7 +98,7 @@ tax_calculator = TaxCalculator.create(args) # args include strategy_name
 tax = tax_calculator.tax_for(39.78)
 ```
 
-Default strategy for a strategy name that has no strategy class is `nil` unless `DefaultStrategy` class exists under the model class namespace or `default_strategy` class attribute is set.
+Default strategy for a strategy name that has no strategy class is `nil` unless the `DefaultStrategy` class exists under the model class namespace or the `default_strategy` class attribute is set.
 
 This is how to set a default strategy on a strategic model via class method `default_strategy`:
 
@@ -107,6 +107,7 @@ class TaxCalculator
   include Strategic
   
   default_strategy 'canada'
+  # ... initialize and other methods
 end
 
 tax_calculator = TaxCalculator.new(args)
