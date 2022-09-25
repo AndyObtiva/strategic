@@ -1,5 +1,6 @@
 # TODO
 
+- Consider providing the option to set a strategy as a block
 - Add `#strategy_name` method on `Strategic::Strategy` classes
 - Customize `strategy_name` attribute name (e.g. `sort_strategy_name`)
 - Support defining DefaultStrategy inside the Strategic class body (right now, it is expected to be an external class in an external file)
