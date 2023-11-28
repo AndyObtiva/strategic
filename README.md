@@ -5,6 +5,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/AndyObtiva/strategic/badge.svg?branch=master)](https://coveralls.io/github/AndyObtiva/strategic?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0e638e392c21500c4fbe/maintainability)](https://codeclimate.com/github/AndyObtiva/strategic/maintainability)
 
+(Featured in [DCR Programming Language](https://github.com/AndyObtiva/dcr))
+
 `if`/`case` conditionals can get really hairy in highly sophisticated business domains.
 Object-oriented inheritance helps remedy the problem, but dumping all
 logic variations in domain model subclasses can cause a maintenance nightmare.
